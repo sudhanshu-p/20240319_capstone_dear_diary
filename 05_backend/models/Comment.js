@@ -7,7 +7,7 @@ const commentSchema = new Schema({
         required: true
     },
     author: {
-        type: Number,
+        type: Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
@@ -21,11 +21,11 @@ const commentSchema = new Schema({
         ref: 'Comment'
     }],
     upvoted_by: [{
-        type: Number,
+        type: Schema.Types.ObjectId,
         ref: 'User'
     }],
     downvoted_by: [{
-        type: Number,
+        type: Schema.Types.ObjectId,
         ref: 'User'
     }]
 });

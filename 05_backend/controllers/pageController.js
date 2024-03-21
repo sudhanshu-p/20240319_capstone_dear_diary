@@ -5,6 +5,9 @@ const User = require("../models/User");
 // Validators
 const pageValidator = require("../validators/Page");
 
+// Helper
+const { formatToTitle } = require("../helpers/helperFunctions");
+
 // Get a page by title
 async function getPageByTitle(req, res) {
   const { title } = req.params;
@@ -12,9 +15,14 @@ async function getPageByTitle(req, res) {
   try {
     const page = await Page.findOne({ title });
 
+    // Check if the page exists and is public
     if (!page || page.visibility === "private") {
       return res.status(404).send("Page not found");
     }
+
+    // Remove unrelevant fields
+
+
 
     res.status(200).send(page);
   } catch (error) {
@@ -24,7 +32,6 @@ async function getPageByTitle(req, res) {
 }
 
 // Create a new page
-
 async function createPage(req, res) {
   const { title, content, visibility } = req.body;
 
@@ -43,12 +50,13 @@ async function createPage(req, res) {
 
   // Get the author from the request
   const author = req.user;
+
   try {
     // Create a new page
     const page = new Page({
-      title,
+      title: formatToTitle(author.username, title),
       content,
-      author_id: author._id,
+      author_name: author.username,
       published: true,
       publish_time: Date.now(),
       last_updated_time: Date.now(),
@@ -88,8 +96,15 @@ async function updatePage(req, res) {
       return res.status(404).send("Page not found");
     }
 
+    // Get the author
+    const author = await User.findOne({ username: page.author_name });
+
+    if (!author) {
+      return res.status(405).send("Author not found");
+    }
+
     // Check if the user is the author of the page
-    if (page.author_id.toString() !== req.user._id.toString()) {
+    if (author._id.toString() !== req.user.id.toString()) {
       return res.status(403).send("Unauthorized");
     }
 
@@ -114,15 +129,19 @@ async function deletePage(req, res) {
   try {
     const page = await Page.findOne({ title });
 
+    // Check if the page exists
     if (!page) {
       return res.status(404).send("Page not found");
     }
 
+    const author = await User.findOne({ username: page.author_name });
+
     // Check if the user is the author of the page
-    if (page.author_id.toString() !== req.user._id.toString()) {
+    if (author._id.toString() !== req.user.id.toString()) {
       return res.status(401).send("Unauthorized");
     }
 
+    // Delete the page
     await Page.deleteOne({ title });
     res.status(200).send("Page deleted");
   } catch (error) {
@@ -138,7 +157,9 @@ async function searchPages(req, res) {
   try {
     let pages;
 
+    // Considering only 1 query parameter can be applied at a time.
     if (search_query) {
+      console.log("Searched")
       // Search for the search query in the title and content
       pages = await Page.find({
         $or: [
@@ -147,12 +168,14 @@ async function searchPages(req, res) {
         ],
         visibility: "public",
       });
-    } else if (recent) {
+    }
+    else if (recent) {
       // Get the most recent pages
       pages = await Page.find({ visibility: "public" })
         .sort({ publish_time: -1 })
-        .limit(10);
-    } else if (author) {
+        .limit(10); // Since for our specific use case, we only need max 10 pages
+    }
+    else if (author) {
       // Get the pages by the author
       const user = await User.findOne({ username: author });
 
@@ -161,8 +184,12 @@ async function searchPages(req, res) {
       }
 
       pages = await Page.find({ author_id: user._id, visibility: "public" });
-    } else {
-      return res.status(400).send("Invalid query");
+    }
+    else {
+      // Return all public pages
+      pages = await Page.find({ visibility: "public" });
+
+      return res.status(200).send(pages);
     }
 
     if (pages.length === 0) {
@@ -170,7 +197,8 @@ async function searchPages(req, res) {
     }
 
     res.status(200).send(pages);
-  } catch (error) {
+  }
+  catch (error) {
     console.error(error);
     res.status(500).send("Server error");
   }

@@ -14,21 +14,24 @@ const router = express.Router();
 // Importing the controller
 const commentController = require("../controllers/commentController");
 
+// Helpers
+const { verifyToken, getUserMiddleware } = require("../helpers/helperFunctions")
+
 // Routes
 
-router.post("/upvote/:title", commentController.upvotePage);
+router.post("/upvote/:title", verifyToken, commentController.upvotePage);
 
-router.post("/downvote/:title", commentController.downvotePage);
+router.post("/downvote/:title", verifyToken, commentController.downvotePage);
 
-router.post("/comment/:title", commentController.commentOnPage);
+router.post("/comment/:title", verifyToken, commentController.commentOnPage);
 
-router.post("/:title/comments/upvote", commentController.upvoteComment);
+router.post("/:title/comments/upvote", verifyToken, commentController.upvoteComment);
 
-router.post("/:title/comments/downvote", commentController.downvoteComment);
+router.post("/:title/comments/downvote", verifyToken, commentController.downvoteComment);
 
-router.post("/:title/comments/reply", commentController.replyToComment);
+router.post("/:title/comments/reply", verifyToken, commentController.replyToComment);
 
-router.delete("/:title/comments", commentController.deleteComment);
+router.delete("/:title/comments", verifyToken, commentController.deleteComment);
 
 // Exporting the router
 module.exports = router;

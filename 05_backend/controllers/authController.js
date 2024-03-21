@@ -27,15 +27,16 @@ async function register(req, res) {
       return res.status(413).send("Invalid password");
     }
 
-    // Check if the user already exists
-
+    // Check if the username already exists
     let user = await User.findOne({ username });
 
     if (user) {
       return res.status(414).send("Username is taken");
     }
 
+    // Check if the user email already exists
     user = await User.findOne({ email });
+
     if (user) {
       return res.status(415).send("Email already in use");
     }

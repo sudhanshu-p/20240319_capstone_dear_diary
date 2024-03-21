@@ -12,16 +12,19 @@ const router = express.Router();
 // Importing the controller
 const pageController = require("../controllers/pageController");
 
+// Internal dependencies
+const { verifyToken, getUserMiddleware } = require("../helpers/helperFunctions")
+
 // Routes
+router.get("/search", pageController.searchPages);
+
 router.get("/:title", pageController.getPageByTitle);
 
-router.post("/", pageController.createPage);
+router.post("/", verifyToken, getUserMiddleware, pageController.createPage);
 
-router.put("/:title", pageController.updatePage);
+router.put("/:title", verifyToken, pageController.updatePage);
 
-router.delete("/:title", pageController.deletePage);
-
-router.get("/search", pageController.searchPages);
+router.delete("/:title", verifyToken, pageController.deletePage);
 
 // Exporting the router
 module.exports = router;

@@ -17,7 +17,6 @@ const pageRouter = require("./routers/pageRouter");
 const userRouter = require("./routers/userRouter");
 
 // Routes
-
 app.use("/auth", authRouter);
 
 app.use("/page", pageRouter);

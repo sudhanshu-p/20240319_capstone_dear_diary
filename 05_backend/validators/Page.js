@@ -15,8 +15,14 @@ async function validateAuthor(author) {
 	return mongoose.Types.ObjectId.isValid(author);
 }
 
+async function validateVisibility(visibility) {
+	// Visibility must be a string with value "public" or "private"
+	return visibility === "public" || visibility === "private";
+}
+
 module.exports = {
 	validateTitle,
 	validateContent,
 	validateAuthor,
+	validateVisibility,
 };

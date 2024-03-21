@@ -25,6 +25,12 @@ async function upvotePage(req, res) {
 			return res.status(200).send("Upvote removed");
 		}
 
+		// If the user has downvoted the page, undo the downvote
+		if (page.downvoted_by.includes(req.user.id)) {
+			const index = page.downvoted_by.indexOf(req.user.id);
+			page.downvoted_by.splice(index, 1);
+		}
+
 		page.upvoted_by.push(req.user.id);
 		await page.save();
 
@@ -53,6 +59,12 @@ async function downvotePage(req, res) {
 			await page.save();
 
 			return res.status(200).send("Downvote removed");
+		}
+
+		// If the user has upvoted the page, undo the upvote
+		if (page.upvoted_by.includes(req.user.id)) {
+			const index = page.upvoted_by.indexOf(req.user.id);
+			page.upvoted_by.splice(index, 1);
 		}
 
 		page.downvoted_by.push(req.user.id);
@@ -130,6 +142,12 @@ async function upvoteComment(req, res) {
 			return res.status(200).send("Upvote removed");
 		}
 
+		// If the user has downvoted the comment, undo the downvote
+		if (comment.downvoted_by.includes(req.user.id)) {
+			const index = comment.downvoted_by.indexOf(req.user.id);
+			comment.downvoted_by.splice(index, 1);
+		}
+
 		comment.upvoted_by.push(req.user.id);
 		await comment.save();
 
@@ -165,6 +183,12 @@ async function downvoteComment(req, res) {
 			await comment.save();
 
 			return res.status(200).send("Downvote removed");
+		}
+
+		// If the user has upvoted the comment, undo the upvote
+		if (comment.upvoted_by.includes(req.user.id)) {
+			const index = comment.upvoted_by.indexOf(req.user.id);
+			comment.upvoted_by.splice(index, 1);
 		}
 
 		comment.downvoted_by.push(req.user.id);
@@ -243,6 +267,12 @@ async function deleteComment(req, res) {
 		// Check if the user is the author of the comment
 		if (comment.author.toString() !== req.user.id.toString()) {
 			return res.status(403).send("Unauthorized");
+		}
+
+		// Check if the comment has any replies
+		if (comment.replies.length > 0) {
+			// Delete the replies
+			await Comment.deleteMany({ _id: { $in: comment.replies } });
 		}
 
 		// Delete the comment
