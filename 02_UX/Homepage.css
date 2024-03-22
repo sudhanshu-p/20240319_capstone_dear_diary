@@ -1,0 +1,91 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    font-family: 'IBM Plex Mono';
+    margin: 0;
+    padding: 0;
+    background-color: #212737;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    justify-content: center;
+    align-items: center;
+    font-family: IBM Plex Mono, monospace;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: min(500px, 90%);
+    text-align: left;
+    gap: 2rem;
+}
+
+.register-text {
+    text-align: left;
+    width: 100%;
+    font-size: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.register-text>p {
+    font-size: 1rem;
+}
+
+.post-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+}
+
+.blog-container {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+}
+
+.blog-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ff6347;
+    text-align: left;
+}
+
+.date {
+    font-size: 1rem;
+    color: #aaa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.description {
+    font-size: 1rem;
+    color: #666;
+}
+
+.seperator {
+    height: 2px;
+    width: 100%;
+    background-color: #ff6347;
+}
+
+footer {
+    width: min(500px, 90%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+}

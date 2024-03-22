@@ -1,0 +1,68 @@
+body {
+    font-family: 'IBM Plex Mono';
+    margin: 0;
+    padding: 0;
+    background-color: #212737;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    justify-content: center;
+    align-items: center;
+    font-family: IBM Plex Mono, monospace;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: min(500px, 90%);
+    text-align: left;
+    gap: 2rem;
+}
+
+.register-text {
+    text-align: left;
+    width: 100%;
+    font-size: 1.5rem;
+    line-height: 1rem;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    background-color: #212737;
+    border: 1px solid #ff6347;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.search-icon {
+    margin-right: 10px;
+}
+
+.search-input {
+    flex: 1;
+    padding: 5px;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    color: #fff;
+}
+
+.seperator {
+    height: 2px;
+    width: 100%;
+    background-color: #ff6347;
+}
+
+footer {
+    width: min(500px, 90%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+}
