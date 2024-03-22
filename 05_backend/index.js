@@ -26,12 +26,4 @@ app.use("/pages", commentRouter);
 app.use("/users", userRouter);
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI);
-mongoose.connection.on("connected", () => {
-	console.log("Connected to MongoDB");
-	// Start the server
-	const port = process.env.PORT || 3000;
-	app.listen(port, () => {
-		console.log(`Server is running on port ${port}`);
-	});
-});
+

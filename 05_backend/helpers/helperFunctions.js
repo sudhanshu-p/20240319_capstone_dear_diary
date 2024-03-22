@@ -21,6 +21,14 @@ function verifyToken(req, res, next) {
     }
 }
 
+/**
+ * This
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ * @returns 
+ */
 async function getUserMiddleware(req, res, next) {
     const user = await User.findOne({ _id: req.user.id })
 
