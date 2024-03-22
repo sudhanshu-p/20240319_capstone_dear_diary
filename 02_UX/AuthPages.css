@@ -16,7 +16,7 @@ main {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: min(500px, 90%);
+    width: min(800px, 90%);
     text-align: left;
 }
 

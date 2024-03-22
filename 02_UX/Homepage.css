@@ -4,7 +4,6 @@
 }
 
 body {
-    font-family: 'IBM Plex Mono';
     margin: 0;
     padding: 0;
     background-color: #212737;
@@ -16,13 +15,12 @@ body {
     align-items: center;
     font-family: IBM Plex Mono, monospace;
 }
-
 main {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: min(500px, 90%);
+    width: min(800px, 90%);
     text-align: left;
     gap: 2rem;
 }

@@ -133,7 +133,12 @@ input:checked+.slider:before {
     border: 1px solid #ff6347;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
     font-size: 16px;
+}
+
+.publish-btn:hover {
+    background-color: #ff6347;
 }
 
 @media (max-width: 768px) {
