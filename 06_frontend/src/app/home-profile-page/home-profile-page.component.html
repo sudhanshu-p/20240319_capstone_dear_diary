@@ -1,0 +1,33 @@
+<div class="outer-container">
+    <div class="inner-container">
+        <div class="register-text">
+            <h1>{{data.title}}</h1>
+            <p>
+                {{data.description}}
+            </p>
+        </div>
+        <div class="seperator"></div>
+        <div class="post-section">
+            <div class="register-text">
+                <h3>Featured</h3>
+            </div>
+
+            <app-blog-showcase-component [blog]="blog" />
+
+        </div>
+
+        <div class="seperator"></div>
+
+        <div class="post-section">
+            <div class="register-text">
+                <h3>Recent Posts</h3>
+            </div>
+            <app-blog-showcase-component [blog]="blog" />
+            <app-blog-showcase-component [blog]="blog" />
+
+            <div class="view-all">
+                <h3>All Posts →</h3>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,13 @@
+main {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+app-footer, app-navbar {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
