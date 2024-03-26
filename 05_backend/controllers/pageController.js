@@ -1,3 +1,5 @@
+const jwt = require("jsonwebtoken");
+
 // Model
 const Page = require("../models/Page");
 const User = require("../models/User");
@@ -6,32 +8,63 @@ const User = require("../models/User");
 const pageValidator = require("../validators/Page");
 
 // Helper
-const { formatToTitle } = require("../helpers/helperFunctions");
+const { formatToUrl, verifyToken } = require("../helpers/helperFunctions");
 
-// Get a page by title
-async function getPageByTitle(req, res) {
-  const { title } = req.params;
+/** Get a page by title
+ * @async
+ * @param {Object} req - Request object. Mandatory fields: title
+ * @param {Object} res - Response object
+ * @returns {Object} - Returns the page if it exists and is public
+ * @returns {Object} - Returns an error if the page does not exist or is private
+ */
+async function getPageByUrl(req, res) {
+  const { url } = req.params;
 
   try {
-    const page = await Page.findOne({ title });
+    const page = await Page.findOne({ url });
 
     // Check if the page exists and is public
-    if (!page || page.visibility === "private") {
+    if (!page) {
       return res.status(404).send("Page not found");
     }
 
-    // Remove unrelevant fields
+    // For a private page, only the author can view it
+    if (page.visibility === "private") {
+      // Check if the user is the author of the page
+      const author = await User.findOne({ username: page.author_name });
+
+      if (!author) {
+        return res.status(404).send("Page not found");
+      }
+
+      const token = req.headers.authorization.split(" ")[1];
+      if(!token) {
+        return res.status(404).send("Page not found");
+      }
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+      if (decoded.id !== author._id.toString()) {
+        return res.status(404).send("Page not found");
+      }
+
+      return res.status(200).send(page);
+    }
 
 
-
-    res.status(200).send(page);
+    return res.status(200).send(page);
   } catch (error) {
     console.error(error);
     res.status(500).send("Server error");
   }
 }
 
-// Create a new page
+/** Create a page
+ * @async
+ * @param {Object} req - Request object. Mandatory fields: title, content, visibility
+ * @param {Object} res - Response object
+ * @returns {Object} - Returns the created page
+ * @returns {Object} - Returns an error if the page is not successfully created
+ */
 async function createPage(req, res) {
   const { title, content, visibility } = req.body;
 
@@ -54,7 +87,8 @@ async function createPage(req, res) {
   try {
     // Create a new page
     const page = new Page({
-      title: formatToTitle(author.username, title),
+      title: title,
+      url: formatToUrl(author.username, title),
       content,
       author_name: author.username,
       published: true,
@@ -75,9 +109,15 @@ async function createPage(req, res) {
   }
 }
 
-// Update a page
+/** Update a page
+ * @async
+ * @param {Object} req - Request object. Mandatory fields: title. Optional fields: content, visibility
+ * @param {Object} res - Response object
+ * @returns {Object} - Returns the updated page
+ * @returns {Object} - Returns an error if the page is not successfully updated
+ */
 async function updatePage(req, res) {
-  const { title } = req.params;
+  const { url } = req.params;
   const { content, visibility } = req.body;
 
   // Validate the user input
@@ -90,7 +130,7 @@ async function updatePage(req, res) {
   }
 
   try {
-    const page = await Page.findOne({ title });
+    const page = await Page.findOne({ url });
 
     if (!page) {
       return res.status(404).send("Page not found");
@@ -109,9 +149,12 @@ async function updatePage(req, res) {
     }
 
     // Update the page
-    page.content = content;
+    if (content)
+      page.content = content;
+    if (visibility)
+      page.visibility = visibility;
+
     page.last_updated_time = Date.now();
-    page.visibility = visibility;
 
     await page.save();
 
@@ -122,12 +165,18 @@ async function updatePage(req, res) {
   }
 }
 
-// Delete a page
+/** Delete a page
+ * @async
+ * @param {Object} req - Request object. Mandatory fields: title
+ * @param {Object} res - Response object
+ * @returns {Object} - Returns a success message if the page is successfully deleted
+ * @returns {Object} - Returns an error if the page is not successfully deleted
+ */
 async function deletePage(req, res) {
-  const { title } = req.params;
+  const { url } = req.params;
 
   try {
-    const page = await Page.findOne({ title });
+    const page = await Page.findOne({ url });
 
     // Check if the page exists
     if (!page) {
@@ -142,7 +191,7 @@ async function deletePage(req, res) {
     }
 
     // Delete the page
-    await Page.deleteOne({ title });
+    await Page.deleteOne({ url });
     res.status(200).send("Page deleted");
   } catch (error) {
     console.error(error);
@@ -150,7 +199,13 @@ async function deletePage(req, res) {
   }
 }
 
-// Search for pages
+/** Search for pages
+ * @async
+ * @param {Object} req - Request object. Optional fields: search_query, recent, author
+ * @param {Object} res - Response object
+ * @returns {Object} - Returns the pages that match the search query
+ * @returns {Object} - Returns an error if no pages are found
+ */
 async function searchPages(req, res) {
   const { search_query, recent, author } = req.query;
 
@@ -206,7 +261,7 @@ async function searchPages(req, res) {
 
 // Export the functions
 module.exports = {
-  getPageByTitle,
+  getPageByUrl,
   createPage,
   updatePage,
   deletePage,

@@ -1,0 +1,18 @@
+<a href="/pages/{{blog.url}}">
+    <h1 class="blog-title">{{trimString(blog.title, TITLE_MAX_LENGTH)}}</h1>
+    <span class="date">
+        <svg class="date-icon" width="23" height="23" viewBox="0 0 23 23" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <g opacity="0.8">
+                <path
+                    d="M6.83301 10.7984H8.63301V12.5984H6.83301V10.7984ZM6.83301 14.3984H8.63301V16.1984H6.83301V14.3984ZM10.433 10.7984H12.233V12.5984H10.433V10.7984ZM10.433 14.3984H12.233V16.1984H10.433V14.3984ZM14.033 10.7984H15.833V12.5984H14.033V10.7984ZM14.033 14.3984H15.833V16.1984H14.033V14.3984Z"
+                    fill="var(--slight-gray)" />
+                <path
+                    d="M5.03291 20.6984H17.6329C18.6256 20.6984 19.4329 19.8911 19.4329 18.8984V6.29836C19.4329 5.30566 18.6256 4.49836 17.6329 4.49836H15.8329V2.69836H14.0329V4.49836H8.63291V2.69836H6.83291V4.49836H5.03291C4.04021 4.49836 3.23291 5.30566 3.23291 6.29836V18.8984C3.23291 19.8911 4.04021 20.6984 5.03291 20.6984ZM17.6329 8.09836L17.6338 18.8984H5.03291V8.09836H17.6329Z"
+                    fill="var(--slight-gray)" />
+            </g>
+        </svg>
+        {{ formatDate(blog.publish_time) }}
+    </span>
+    <span class="description">{{trimString(blog.content, DESCRIPTION_MAX_LENGTH)}}</span>
+</a>

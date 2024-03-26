@@ -10,9 +10,17 @@ const User = require("../models/User");
 const userValidator = require("../validators/User");
 
 // Register
+/** Register
+ * @async
+ * @param {Object} req - Request object. Mandatory fields: username, email, password
+ * @param {Object} res - Response object
+ * @returns {Object} - Returns a token if the user is successfully registered
+ * @returns {Object} - Returns an error if the user is not successfully registered. 
+ */
 async function register(req, res) {
   // Get the user input
   const { username, email, password } = req.body;
+  console.log(req.body)
   try {
     // Validate the user input
     if (!userValidator.validateUsername(username)) {
@@ -67,10 +75,17 @@ async function register(req, res) {
 }
 
 // Login
-
+/** Login
+ * @async
+ * @param {Object} req - Request object. Mandatory fields: userKey, password
+ * @param {Object} res - Response object
+ * @returns {Object} - Returns a token if the user is successfully logged in
+ * @returns {Object} - Returns an error if the user is not successfully logged in.
+*/
 async function login(req, res) {
   // Get the user input
   const { userKey, password } = req.body;
+  console.log(req.body)
   try {
     // If the userKey is an email
     let user = await User.findOne({ email: userKey });

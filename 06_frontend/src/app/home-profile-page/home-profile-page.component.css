@@ -1,0 +1,42 @@
+.outer-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.inner-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: min(800px, 95%);
+    gap: 2rem;
+}
+
+.register-text {
+    text-align: left;
+    width: 100%;
+    font-size: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.register-text>p {
+    font-size: 1rem;
+}
+
+.post-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    width: 100%;
+}
+
+app-blog-showcase-component {
+    width: 100%;
+}

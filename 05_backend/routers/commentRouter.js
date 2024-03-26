@@ -19,19 +19,19 @@ const { verifyToken, getUserMiddleware } = require("../helpers/helperFunctions")
 
 // Routes
 
-router.post("/upvote/:title", verifyToken, commentController.upvotePage);
+router.post("/upvote/:url", verifyToken, commentController.upvotePage);
 
-router.post("/downvote/:title", verifyToken, commentController.downvotePage);
+router.post("/downvote/:url", verifyToken, commentController.downvotePage);
 
-router.post("/comment/:title", verifyToken, commentController.commentOnPage);
+router.post("/comment/:url", verifyToken, commentController.commentOnPage);
 
-router.post("/:title/comments/upvote", verifyToken, commentController.upvoteComment);
+router.post("/:url/comments/upvote", verifyToken, commentController.upvoteComment);
 
-router.post("/:title/comments/downvote", verifyToken, commentController.downvoteComment);
+router.post("/:url/comments/downvote", verifyToken, commentController.downvoteComment);
 
-router.post("/:title/comments/reply", verifyToken, commentController.replyToComment);
+router.post("/:url/comments/reply", verifyToken, commentController.replyToComment);
 
-router.delete("/:title/comments", verifyToken, commentController.deleteComment);
+router.delete("/:url/comments", verifyToken, commentController.deleteComment);
 
 // Exporting the router
 module.exports = router;

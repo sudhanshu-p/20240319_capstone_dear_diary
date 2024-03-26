@@ -1,0 +1,205 @@
+<div class="body">
+    <div class="vote-section">
+        <button class="upvote vote-button">
+            <!-- <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12.5 6.25L6.25 12.5L12.5 18.75" stroke="#999" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+        </svg> -->
+            +
+        </button>
+        <h3>12</h3>
+        <button class="downvote vote-button">
+            <!-- <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12.5 18.75L18.75 12.5L12.5 6.25" stroke="#999" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+        </svg> -->
+            -
+        </button>
+    </div>
+    <div class="main">
+        <div class="blog-title">
+            <div class="title-text">
+                <h1>
+                    {{blog.title}}
+                </h1>
+                <p>{{formatDate(blog.last_updated_time)}}</p>
+            </div>
+        </div>
+        <article class="blog-content">
+            <markdown [data]="blog.content.toString()" ngPreserveWhitespaces />
+        </article>
+        <!--     <p>
+                Because why use extra dependencies when you can shoot yourself in the leg
+            </p>
+            <br>
+            <h2>Table of contents</h2>
+            <br>
+            <p>
+                Open Table of contents
+            </p>
+            <br>
+            <h2>
+                Why not?
+            </h2>
+            <br>
+            <p>
+                On a serious note, should you really be implementing Authentication
+                yourself? Short answer for most projects - NO. There are plenty of other
+                better and much easier methods to do so. Here is a list of some I found
+                useful in the past:
+            </p>
+        </article> -->
+        <div class="comments-section">
+            <h1>Comments</h1>
+            <div class="comment">
+                <div class="vote-section">
+                    <button class="upvote vote-button">
+                        <!-- <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12.5 6.25L6.25 12.5L12.5 18.75" stroke="#999" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg> -->
+                        +
+                    </button>
+                    <h3>12</h3>
+                    <button class="downvote vote-button">
+                        <!-- <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12.5 18.75L18.75 12.5L12.5 6.25" stroke="#999" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg> -->
+                        -
+                    </button>
+                </div>
+                <div class="comment-main">
+                    <div class="comment-header">
+                        <div class="avatar">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                <circle cx="16" cy="16" r="16" fill="url(#pattern0)" />
+                                <defs>
+                                    <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
+                                        <use xlink:href="#image0_15_777" transform="scale(0.047619)" />
+                                    </pattern>
+                                    <image id="image0_15_777" width="21" height="21"
+                                        xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAVCAYAAACpF6WWAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAKGSURBVHgBpVRLctpAEO0efVwhWXCDyNtUKkiusokNKfAJkhsYTmByAuMbODcgNyAngJRDKOMF4AsY30ArL8CaTvcgQAjJlcRvo/n0PPX06zcIORj3xsXFnlVCTV8IqQgEHiDMQOPEVk73oPLuIe8sZpHNXXXOZC3eLUI++ja6jSzyLdJhb+xZDvZ46MWbfUDsU6QfkLMkS5WAyOetusmcQYjtcqV0mUmaJCQmUJqah5+CPmRgOBx7tlZnRNTOIl6Tjn5N7k2GCBOnQKdBEIRm/fddDUg3CLgUhF13oX8Ep8u928HdZyLd4WFRK2x9PCl9W5PeDKYXyH+VDN0CBRvC6TloukpmyeQzd8ExMfHNcHqGEQlx6CxoX9aVCMOEDQlwXrn1FaGsg4i1K4L3xEKu5uXj0neQ2nO2q3X15Fo1ubaIcnCwUVLaCWLB0tBgxNpAqba5RZyc4lHdLCjsJuMijHL7MI2jkw8/5fqShNxQUfxXjPQ0GXh8HMzia+0ilUAMiYdHFzwFzyCyqGlctE3YiuuYhtHC1VC0zSGWFFG9TUfF2e7fXo/rMrffwCQI/BCyYdw3VxAqBJSDwutnRUqNrNd792RZBDl0YhyIz1cqwcRmN/RZLCalBhNcSp+t/c8iLsSSj3NzeOEgjK4nISmuNRuhXF2WwXFUjTtiaWuIm5/dJPasI9uNDRBCxPZ7/jGB+HYzVKoB2rjKIwsbUu8lqVhR6z68AOLGcsXfl7FRX/qMa3sF/49Q3LiarFvqsFr6yp8O/DtCcux60o1bfXpU9ZtSV/hLiDB2wfXL5ffT1Pou5L20NF5A4jFOk2kLOzkmyCZNYjQY+6iXncCtFDoFmK1esjz8ARXMGtOKkE5QAAAAAElFTkSuQmCC" />
+                                </defs>
+                            </svg>
+
+                        </div>
+                        <div class="user-info">
+                            <span class="username">amyrobson</span>
+                            <span class="timestamp">1 month ago</span>
+                        </div>
+                    </div>
+                    <div class="comment-body">
+                        <p>Impressive! Though it seems the drag feature could be improved. But overall it looks
+                            incredible.
+                            You've nailed the design and the responsiveness at various breakpoints works really well.
+                        </p>
+                    </div>
+                </div>
+                <div class="comment-actions">
+                    <button class="reply-btn">
+                        <svg width="14" height="13" viewBox="0 0 14 13" fill="white" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M0.227189 4.31583L5.0398 0.159982C5.46106 -0.203822 6.125 0.0915222 6.125 0.656646V2.8456C10.5172 2.89589 14 3.77618 14 7.93861C14 9.61864 12.9177 11.283 11.7214 12.1532C11.348 12.4247 10.816 12.0839 10.9536 11.6437C12.1935 7.67857 10.3655 6.62588 6.125 6.56484V8.96878C6.125 9.5348 5.46056 9.82883 5.0398 9.46545L0.227189 5.30918C-0.0755195 5.04772 -0.0759395 4.57766 0.227189 4.31583Z"
+                                fill="#FF6B01" />
+                        </svg>
+                        Reply
+                    </button>
+                </div>
+            </div>
+
+            <div class="comment">
+                <div class="vote-section">
+                    <button class="upvote vote-button">
+                        <!-- <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12.5 6.25L6.25 12.5L12.5 18.75" stroke="#999" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg> -->
+                        +
+                    </button>
+                    <h3>12</h3>
+                    <button class="downvote vote-button">
+                        <!-- <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12.5 18.75L18.75 12.5L12.5 6.25" stroke="#999" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg> -->
+                        -
+                    </button>
+                </div>
+                <div class="comment-main">
+                    <div class="comment-header">
+                        <div class="avatar">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                <circle cx="16" cy="16" r="16" fill="url(#pattern0)" />
+                                <defs>
+                                    <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
+                                        <use xlink:href="#image0_15_777" transform="scale(0.047619)" />
+                                    </pattern>
+                                    <image id="image0_15_777" width="21" height="21"
+                                        xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAVCAYAAACpF6WWAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAKGSURBVHgBpVRLctpAEO0efVwhWXCDyNtUKkiusokNKfAJkhsYTmByAuMbODcgNyAngJRDKOMF4AsY30ArL8CaTvcgQAjJlcRvo/n0PPX06zcIORj3xsXFnlVCTV8IqQgEHiDMQOPEVk73oPLuIe8sZpHNXXXOZC3eLUI++ja6jSzyLdJhb+xZDvZ46MWbfUDsU6QfkLMkS5WAyOetusmcQYjtcqV0mUmaJCQmUJqah5+CPmRgOBx7tlZnRNTOIl6Tjn5N7k2GCBOnQKdBEIRm/fddDUg3CLgUhF13oX8Ep8u928HdZyLd4WFRK2x9PCl9W5PeDKYXyH+VDN0CBRvC6TloukpmyeQzd8ExMfHNcHqGEQlx6CxoX9aVCMOEDQlwXrn1FaGsg4i1K4L3xEKu5uXj0neQ2nO2q3X15Fo1ubaIcnCwUVLaCWLB0tBgxNpAqba5RZyc4lHdLCjsJuMijHL7MI2jkw8/5fqShNxQUfxXjPQ0GXh8HMzia+0ilUAMiYdHFzwFzyCyqGlctE3YiuuYhtHC1VC0zSGWFFG9TUfF2e7fXo/rMrffwCQI/BCyYdw3VxAqBJSDwutnRUqNrNd792RZBDl0YhyIz1cqwcRmN/RZLCalBhNcSp+t/c8iLsSSj3NzeOEgjK4nISmuNRuhXF2WwXFUjTtiaWuIm5/dJPasI9uNDRBCxPZ7/jGB+HYzVKoB2rjKIwsbUu8lqVhR6z68AOLGcsXfl7FRX/qMa3sF/49Q3LiarFvqsFr6yp8O/DtCcux60o1bfXpU9ZtSV/hLiDB2wfXL5ffT1Pou5L20NF5A4jFOk2kLOzkmyCZNYjQY+6iXncCtFDoFmK1esjz8ARXMGtOKkE5QAAAAAElFTkSuQmCC" />
+                                </defs>
+                            </svg>
+
+                        </div>
+                        <div class="user-info">
+                            <span class="username">amyrobson</span>
+                            <span class="timestamp">1 month ago</span>
+                        </div>
+                    </div>
+                    <div class="comment-body">
+                        <p>Impressive! Though it seems the drag feature could be improved. But overall it looks
+                            incredible.
+                            You've nailed the design and the responsiveness at various breakpoints works really well.
+                        </p>
+                    </div>
+                </div>
+                <div class="comment-actions">
+                    <button class="reply-btn">
+                        <svg width="14" height="13" viewBox="0 0 14 13" fill="white" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M0.227189 4.31583L5.0398 0.159982C5.46106 -0.203822 6.125 0.0915222 6.125 0.656646V2.8456C10.5172 2.89589 14 3.77618 14 7.93861C14 9.61864 12.9177 11.283 11.7214 12.1532C11.348 12.4247 10.816 12.0839 10.9536 11.6437C12.1935 7.67857 10.3655 6.62588 6.125 6.56484V8.96878C6.125 9.5348 5.46056 9.82883 5.0398 9.46545L0.227189 5.30918C-0.0755195 5.04772 -0.0759395 4.57766 0.227189 4.31583Z"
+                                fill="#FF6B01" />
+                        </svg>
+                        Reply
+                    </button>
+                </div>
+            </div>
+
+            <div class="comment-input">
+                <div class="avatar">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <circle cx="16" cy="16" r="16" fill="url(#pattern0)" />
+                        <defs>
+                            <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
+                                <use xlink:href="#image0_15_777" transform="scale(0.047619)" />
+                            </pattern>
+                            <image id="image0_15_777" width="21" height="21"
+                                xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAVCAYAAACpF6WWAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAKGSURBVHgBpVRLctpAEO0efVwhWXCDyNtUKkiusokNKfAJkhsYTmByAuMbODcgNyAngJRDKOMF4AsY30ArL8CaTvcgQAjJlcRvo/n0PPX06zcIORj3xsXFnlVCTV8IqQgEHiDMQOPEVk73oPLuIe8sZpHNXXXOZC3eLUI++ja6jSzyLdJhb+xZDvZ46MWbfUDsU6QfkLMkS5WAyOetusmcQYjtcqV0mUmaJCQmUJqah5+CPmRgOBx7tlZnRNTOIl6Tjn5N7k2GCBOnQKdBEIRm/fddDUg3CLgUhF13oX8Ep8u928HdZyLd4WFRK2x9PCl9W5PeDKYXyH+VDN0CBRvC6TloukpmyeQzd8ExMfHNcHqGEQlx6CxoX9aVCMOEDQlwXrn1FaGsg4i1K4L3xEKu5uXj0neQ2nO2q3X15Fo1ubaIcnCwUVLaCWLB0tBgxNpAqba5RZyc4lHdLCjsJuMijHL7MI2jkw8/5fqShNxQUfxXjPQ0GXh8HMzia+0ilUAMiYdHFzwFzyCyqGlctE3YiuuYhtHC1VC0zSGWFFG9TUfF2e7fXo/rMrffwCQI/BCyYdw3VxAqBJSDwutnRUqNrNd792RZBDl0YhyIz1cqwcRmN/RZLCalBhNcSp+t/c8iLsSSj3NzeOEgjK4nISmuNRuhXF2WwXFUjTtiaWuIm5/dJPasI9uNDRBCxPZ7/jGB+HYzVKoB2rjKIwsbUu8lqVhR6z68AOLGcsXfl7FRX/qMa3sF/49Q3LiarFvqsFr6yp8O/DtCcux60o1bfXpU9ZtSV/hLiDB2wfXL5ffT1Pou5L20NF5A4jFOk2kLOzkmyCZNYjQY+6iXncCtFDoFmK1esjz8ARXMGtOKkE5QAAAAAElFTkSuQmCC" />
+                        </defs>
+                    </svg>
+                </div>
+                <input type="text" placeholder="Add a comment..." class="comment-input-field">
+                <button class="send-btn">SEND</button>
+            </div>
+        </div>
+    </div>
+    <div class="action-buttons">
+        <button>
+            <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M3.57143 10.9375V7.8125C3.57143 5.7405 4.51211 3.75336 6.18655 2.28823C7.86098 0.8231 10.132 0 12.5 0C14.868 0 17.139 0.8231 18.8135 2.28823C20.4879 3.75336 21.4286 5.7405 21.4286 7.8125V10.9375C22.3758 10.9375 23.2842 11.2667 23.954 11.8528C24.6237 12.4388 25 13.2337 25 14.0625V21.875C25 22.7038 24.6237 23.4987 23.954 24.0847C23.2842 24.6708 22.3758 25 21.4286 25H3.57143C2.62423 25 1.71582 24.6708 1.04605 24.0847C0.376274 23.4987 0 22.7038 0 21.875V14.0625C0 13.2337 0.376274 12.4388 1.04605 11.8528C1.71582 11.2667 2.62423 10.9375 3.57143 10.9375ZM17.8571 7.8125V10.9375H7.14286V7.8125C7.14286 6.5693 7.70727 5.37701 8.71193 4.49794C9.71659 3.61886 11.0792 3.125 12.5 3.125C13.9208 3.125 15.2834 3.61886 16.2881 4.49794C17.2927 5.37701 17.8571 6.5693 17.8571 7.8125Z"
+                    fill="#FF6B01" />
+            </svg>
+        </button>
+        <button>
+            <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M15.8667 5.44998L19.55 9.13331M17.4292 3.88748C17.9176 3.39904 18.5801 3.12463 19.2708 3.12463C19.9616 3.12463 20.6241 3.39904 21.1125 3.88748C21.6009 4.37592 21.8753 5.03838 21.8753 5.72914C21.8753 6.4199 21.6009 7.08237 21.1125 7.57081L6.77083 21.9125H3.125V18.1916L17.4292 3.88748Z"
+                    stroke="#FF6B01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+        </button>
+    </div>
+</div>

@@ -1,0 +1,43 @@
+<div class="container">
+    <div class="left-section">
+        <h1>Create a New Blog Post</h1>
+        <div class="seperator"></div>
+        <div class="input-group">
+            <label for="post-title">Post Title</label>
+            <input type="text" id="post-title" placeholder="My new Markdown-based Blog" [(ngModel)]="blogTitle"/>
+        </div>
+
+        <div class="toolbar">
+            <button class="my-button" (click)="insertMarkdown('**','Some Bold Text', '**')">Bold</button>
+            <button class="my-button" (click)="insertMarkdown('_', 'Some Italic Text', '_')">Italic</button>
+            <button class="my-button" (click)="insertMarkdown('### ','This is a Heading!', '')">Heading</button>
+            <button class="my-button" (click)="insertMarkdown('- ', 'List item', '')">List item</button>
+            <button class="my-button" (click)="insertMarkdown('```\n', 'function helloWorld()', '\n```')">Code
+                block</button>
+            <button class="my-button" (click)="openFileInput()">Insert Image</button>
+            <button class="my-button" (click)="insertMarkdown('[Link Text](', 'https://url.com', ')')">Link</button>
+        </div>
+
+        <div class="input-group">
+            <label for="post-content">Post Content</label>
+            <textarea id="post-content" [(ngModel)]="blogContent"></textarea>
+        </div>
+        <div class="privacy-toggle">
+            <span class="toggle-label">Public</span>
+            <label class="switch">
+                <input type="checkbox" #toggleCheckbox />
+                <span class="slider"></span>
+            </label>
+            <span class="toggle-label">Private</span>
+        </div>
+        <div class="seperator"></div>
+        <div class="publish-btn-container">
+            <button class="publish-btn" (click)="savePost()">Publish</button>
+        </div>
+    </div>
+    <div class="right-section">
+        <h1>Preview</h1>
+        <div class="seperator"></div>
+        <markdown [data]="blogContent" ngPreserveWhitespaces></markdown>
+    </div>
+</div>

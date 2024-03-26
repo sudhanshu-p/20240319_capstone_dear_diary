@@ -8,9 +8,10 @@ const router = express.Router();
 
 // Importing the controller
 const userController = require("../controllers/userController");
+const { verifyToken } = require("../helpers/helperFunctions");
 
 // Routes
-router.put("/", userController.updateUser);
+router.put("/", verifyToken, userController.updateUser);
 
 router.get("/", userController.getUser);
 
