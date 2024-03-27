@@ -27,3 +27,21 @@ app.use("/users", userRouter);
 
 // Connect to MongoDB
 
+const connectToMongoDB = async () => {
+    try {
+        await mongoose.connect(process.env.MONGO_URI);
+        console.log('MongoDB connected');
+        startServer();
+    } catch (err) {
+        console.error('Failed to connect to MongoDB', err);
+    }
+};
+
+const startServer = () => {
+    const port = process.env.PORT || 3000;
+    app.listen(port, () => {
+        console.log(`Server is running on port ${port}`);
+    });
+};
+
+connectToMongoDB();

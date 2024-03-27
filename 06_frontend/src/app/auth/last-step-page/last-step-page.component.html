@@ -2,14 +2,11 @@
     <h1>One Last Step!</h1>
 </div>
 <div class="seperator"></div>
-<form>
+<form [formGroup]="myForm" (ngSubmit)="onSubmit()">
     <div class="form-group">
         <label for="username">Describe yourself in a few words</label>
-        <!-- <input type="text" id="username" placeholder="Your Username" class="input-field"> -->
-        <textarea name="description" id="" cols="40" rows="10"></textarea>
-        <small>Supporting text</small>
+        <textarea name="description" id="" cols="40" rows="10" formControlName="description"></textarea>
     </div>
+    <div class="seperator"></div>
+    <button type="submit" class="register-btn">Create account</button>
 </form>
-<div class="seperator"></div>
-<button type="submit" class="register-btn">Create account</button>
-<div class="seperator"></div>

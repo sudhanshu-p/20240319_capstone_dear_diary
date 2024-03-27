@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const pageSchema = new Schema({
-    title: { type: String, required: true, maxLength: 256, unique: true },
+    url: { type: String, required: true, maxLength: 256, unique: true },
+    title: { type: String, required: true, maxLength: 256 },
     content: { type: String, required: true },
     author_name: { type: String, ref: 'User', required: true },
     published: { type: Boolean, default: false },

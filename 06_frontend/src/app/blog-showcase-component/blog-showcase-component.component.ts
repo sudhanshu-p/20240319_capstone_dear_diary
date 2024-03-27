@@ -8,15 +8,21 @@ import { Component, Input } from '@angular/core';
 export class BlogShowcaseComponentComponent {
   @Input()
   blog: blogMetadata = {
+    url: "Sample-url",
     title: "Sample text",
-    description: "Sample description",
-    date: new Date('2023-01-23T19:34:00')
+    content: "Sample description",
+    publish_time: new Date('2023-01-23T19:34:00'),
+    last_updated_time: new Date('2023-01-23T19:34:00'),
+    upvoted_by: [],
+    downvoted_by: [],
   }
 
   TITLE_MAX_LENGTH = 100
   DESCRIPTION_MAX_LENGTH = 250
 
   formatDate(date: Date) {
+    // This step is... mandatory... I have no idea why...
+    date = new Date(date)
     const months = [
       'January', 'February', 'March', 'April', 'May', 'June',
       'July', 'August', 'September', 'October', 'November', 'December'

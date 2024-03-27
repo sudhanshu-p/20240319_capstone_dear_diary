@@ -1,14 +1,26 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-search-page',
   templateUrl: './search-page.component.html',
   styleUrl: './search-page.component.css'
 })
-export class SearchPageComponent {
-  blog: blogMetadata = {
-    title: "Implementing Credential-based Authentication with SvelteKit and MongoDB",
-    description: "Instructions on how to implement Authentication with SvelteKit with MongoDB as the Database",
-    date: new Date('2023-01-23T19:34:00')
+export class SearchPageComponent implements OnInit {
+  blogs: Array<blogMetadata> = []
+
+  constructor(private authService: AuthService) { }
+
+  ngOnInit(): void {
+    this.authService.makeRequest('page/search?recent=true', 'get', false)
+      .subscribe(
+        (response) => {
+          this.blogs = response
+          console.log(response)
+        },
+        (error) => {
+          console.error(error)
+        }
+      )
   }
 }

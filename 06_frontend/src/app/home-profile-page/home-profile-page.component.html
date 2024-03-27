@@ -9,21 +9,16 @@
         <div class="seperator"></div>
         <div class="post-section">
             <div class="register-text">
-                <h3>Featured</h3>
-            </div>
-
-            <app-blog-showcase-component [blog]="blog" />
-
-        </div>
-
-        <div class="seperator"></div>
-
-        <div class="post-section">
-            <div class="register-text">
                 <h3>Recent Posts</h3>
             </div>
-            <app-blog-showcase-component [blog]="blog" />
-            <app-blog-showcase-component [blog]="blog" />
+            @for (blog of blogs; track blog) {
+                <app-blog-showcase-component [blog]="blog" />
+            }
+            
+            <!-- No blogs case -->
+            @if (blogs.length === 0) {
+                <p>No blogs found :(</p>
+            }
 
             <div class="view-all">
                 <h3>All Posts →</h3>

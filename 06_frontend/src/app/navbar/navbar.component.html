@@ -21,11 +21,17 @@
                             fill="var(--slight-gray)" />
                     </svg>
                 </li>
-                <li>
+                <li *ngIf="!isLoggedIn">
                     <button class="my-button" (click)="goToPage('login')">Login</button>
                 </li>
-                <li>
+                <li *ngIf="!isLoggedIn">
                     <button class="my-button" (click)="goToPage('register')">Register</button>
+                </li>
+                <li *ngIf="isLoggedIn">
+                    <button class="my-button" (click)="logOut()">Logout</button>
+                </li>
+                <li *ngIf="isLoggedIn">
+                    <button class="my-button" (click)="goToPage('editor')">Write a Blog</button>
                 </li>
                 <li class="menu-toggle">
                     <button class="hamburger-btn" (click)="toggleMenu()">

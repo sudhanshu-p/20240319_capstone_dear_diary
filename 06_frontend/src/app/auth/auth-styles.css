@@ -3,8 +3,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: min(800px, 90%);
-    text-align: left;
+    width: min(800px, 95%);
+    gap: 2rem;
 }
 
 .register-text {
@@ -28,7 +28,7 @@ label {
 
 .input-field,
 textarea {
-    width: min(90%, 400px);
+    width: min(90vw, 400px);
     padding: 10px;
     border: 1px solid var(--primary-color);
     border-radius: 4px;

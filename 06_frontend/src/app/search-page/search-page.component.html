@@ -17,10 +17,8 @@
             <input type="text" placeholder="Search for anything..." class="search-input">
         </div>
 
+        @for (blog of blogs; track blog) {
         <app-blog-showcase-component [blog]="blog" />
-        <app-blog-showcase-component [blog]="blog" />
-        <app-blog-showcase-component [blog]="blog" />
-        <app-blog-showcase-component [blog]="blog" />
-        <app-blog-showcase-component [blog]="blog" />
+        }
     </div>
 </div>

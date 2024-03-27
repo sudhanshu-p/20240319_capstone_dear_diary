@@ -5,12 +5,18 @@ const Page = require("../models/Page");
 // Validators
 const commentValidator = require("../validators/Comment");
 
-// Upvote a page
+/** Upvote a page
+ * @async
+ * @param {Object} req - Request object. Mandatory fields: url
+ * @param {Object} res - Response object
+ * @returns {Object} - Returns a message if the page is successfully upvoted
+ * @returns {Object} - Returns an error if the page is not successfully upvoted
+ */
 async function upvotePage(req, res) {
-	const { title } = req.params;
+	const { url } = req.params;
 
 	try {
-		const page = await Page.findOne({ title });
+		const page = await Page.findOne({ url });
 
 		if (!page) {
 			return res.status(404).send("Page not found");
@@ -41,12 +47,18 @@ async function upvotePage(req, res) {
 	}
 }
 
-// Downvote a page
+/** Downvote a page
+ * @async
+ * @param {Object} req - Request object. Mandatory fields: url
+ * @param {Object} res - Response object
+ * @returns {Object} - Returns a message if the page is successfully downvoted
+ * @returns {Object} - Returns an error if the page is not successfully downvoted
+ */
 async function downvotePage(req, res) {
-	const { title } = req.params;
+	const { url } = req.params;
 
 	try {
-		const page = await Page.findOne({ title });
+		const page = await Page.findOne({ url });
 
 		if (!page) {
 			return res.status(404).send("Page not found");
@@ -77,9 +89,15 @@ async function downvotePage(req, res) {
 	}
 }
 
-// Comment on a page
+/** Comment on a page
+ * @async
+ * @param {Object} req - Request object. Mandatory fields: url, content
+ * @param {Object} res - Response object
+ * @returns {Object} - Returns the comment if the comment is successfully created
+ * @returns {Object} - Returns an error if the comment is not successfully created
+ */
 async function commentOnPage(req, res) {
-	const { title } = req.params;
+	const { url } = req.params;
 	const { content } = req.body;
 
 	// Validate the user input
@@ -88,7 +106,7 @@ async function commentOnPage(req, res) {
 	}
 
 	try {
-		const page = await Page.findOne({ title });
+		const page = await Page.findOne({ url });
 
 		if (!page) {
 			return res.status(404).send("Page not found");
@@ -115,13 +133,19 @@ async function commentOnPage(req, res) {
 	}
 }
 
-// Upvote a comment
+/** Upvote a comment
+ * @async
+ * @param {Object} req - Request object. Mandatory fields: url, comment_id
+ * @param {Object} res - Response object
+ * @returns {Object} - Returns a message if the comment is successfully upvoted
+ * @returns {Object} - Returns an error if the comment is not successfully upvoted
+ */
 async function upvoteComment(req, res) {
-	const { title } = req.params;
+	const { url } = req.params;
 	const { comment_id } = req.body;
 
 	try {
-		const page = await Page.findOne({ title });
+		const page = await Page.findOne({ url });
 
 		if (!page) {
 			return res.status(404).send("Page not found");
@@ -158,13 +182,19 @@ async function upvoteComment(req, res) {
 	}
 }
 
-// Downvote a comment
+/** Downvote a comment
+ * @async
+ * @param {Object} req - Request object. Mandatory fields: url, comment_id
+ * @param {Object} res - Response object
+ * @returns {Object} - Returns a message if the comment is successfully downvoted
+ * @returns {Object} - Returns an error if the comment is not successfully downvoted
+ */
 async function downvoteComment(req, res) {
-	const { title } = req.params;
+	const { url } = req.params;
 	const { comment_id } = req.body;
 
 	try {
-		const page = await Page.findOne({ title });
+		const page = await Page.findOne({ url });
 
 		if (!page) {
 			return res.status(404).send("Page not found");
@@ -202,9 +232,15 @@ async function downvoteComment(req, res) {
 	}
 }
 
-// Reply to a comment
+/** Reply to a comment
+ * @async
+ * @param {Object} req - Request object. Mandatory fields: url, comment_id, content
+ * @param {Object} res - Response object
+ * @returns {Object} - Returns the reply if the reply is successfully created
+ * @returns {Object} - Returns an error if the reply is not successfully created
+ */
 async function replyToComment(req, res) {
-	const { title } = req.params;
+	const { url } = req.params;
 	const { comment_id, content } = req.body;
 
 	// Validate the user input
@@ -213,7 +249,7 @@ async function replyToComment(req, res) {
 	}
 
 	try {
-		const page = await Page.findOne({ title });
+		const page = await Page.findOne({ url });
 
 		if (!page) {
 			return res.status(404).send("Page not found");
@@ -246,13 +282,19 @@ async function replyToComment(req, res) {
 	}
 }
 
-// Delete a comment
+/** Delete a comment
+ * @async
+ * @param {Object} req - Request object. Mandatory fields: url, comment_id
+ * @param {Object} res - Response object
+ * @returns {Object} - Returns a message if the comment is successfully deleted
+ * @returns {Object} - Returns an error if the comment is not successfully deleted
+ */
 async function deleteComment(req, res) {
-	const { title } = req.params;
+	const { url } = req.params;
 	const { comment_id } = req.body;
 
 	try {
-		const page = await Page.findOne({ title });
+		const page = await Page.findOne({ url });
 
 		if (!page) {
 			return res.status(404).send("Page not found");

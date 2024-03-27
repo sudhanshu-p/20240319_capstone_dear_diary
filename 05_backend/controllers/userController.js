@@ -8,7 +8,13 @@ const Page = require("../models/Page");
 // Validators
 const userValidator = require("../validators/User");
 
-// Get user details
+/** Get user details
+ * @async
+ * @param {Object} req - Request object
+ * @param {Object} res - Response object
+ * @returns {Object} - Returns the user details
+ * @returns {Object} - Returns an error if the user does not exist
+ */
 async function getUser(req, res) {
 	const user = req.user;
 
@@ -28,9 +34,16 @@ async function getUser(req, res) {
 	}
 }
 
-// Update user details
+/** Update user details
+ * @async
+ * @param {Object} req - Request object. Mandatory fields: description
+ * @param {Object} res - Response object
+ * @returns {Object} - Returns a message if the user details are successfully updated
+ * @returns {Object} - Returns an error if the user details are not successfully updated
+ */
 async function updateUser(req, res) {
-	const { description } = req.body.description;
+	const { description } = req.body;
+	console.log(req.body)
 
 	// Validate the user input
 	if (!userValidator.validateDescription(description)) {
@@ -38,7 +51,8 @@ async function updateUser(req, res) {
 	}
 
 	try {
-		const user = await User.find(req.user.id);
+		console.log(req.user)
+		const user = await User.findOne({ _id: req.user.id });
 
 		if (!user) {
 			return res.status(404).send("Account does not exist");
@@ -53,6 +67,13 @@ async function updateUser(req, res) {
 	}
 }
 
+/** Get user details by username
+ * @async
+ * @param {Object} req - Request object
+ * @param {Object} res - Response object
+ * @returns {Object} - Returns the user details
+ * @returns {Object} - Returns an error if the user does not exist
+ */
 async function getUserByUsername(req, res) {
 	const { username } = req.params;
 
