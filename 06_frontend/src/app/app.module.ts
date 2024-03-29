@@ -22,6 +22,16 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MarkdownModule } from 'ngx-markdown';
 import { CreatePageComponent } from './create-page/create-page.component';
 import { CommonModule } from '@angular/common';
+import firebase from 'firebase/app'
+import { getMessaging } from 'firebase/messaging';
+import {FirebaseConfig} from './firebase-config'
+
+// Initialize Firebase
+const app = firebase.initializeApp(FirebaseConfig);
+
+// Initialize Firebase Messaging
+const messaging = getMessaging(app);
+
 
 @NgModule({
   declarations: [
