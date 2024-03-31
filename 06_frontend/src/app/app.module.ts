@@ -22,7 +22,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MarkdownModule } from 'ngx-markdown';
 import { CreatePageComponent } from './create-page/create-page.component';
 import { CommonModule } from '@angular/common';
-
+import {MatTabsModule} from '@angular/material/tabs';
 @NgModule({
   declarations: [
     AppComponent,
@@ -46,7 +46,8 @@ import { CommonModule } from '@angular/common';
     ReactiveFormsModule,
     HttpClientModule,
     FormsModule,
-    MarkdownModule.forRoot()
+    MarkdownModule.forRoot(),
+    MatTabsModule
   ],
   providers: [
     provideAnimationsAsync()

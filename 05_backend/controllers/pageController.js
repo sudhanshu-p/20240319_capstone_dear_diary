@@ -66,7 +66,7 @@ async function getPageByUrl(req, res) {
  * @returns {Object} - Returns an error if the page is not successfully created
  */
 async function createPage(req, res) {
-  const { title, content, visibility } = req.body;
+  const { title, content, visibility, posttype, anonymous } = req.body;
 
   // Validate the user input
   if (!pageValidator.validateTitle(title)) {
@@ -98,6 +98,7 @@ async function createPage(req, res) {
       upvoted_by: [],
       downvoted_by: [],
       comments: [],
+
     });
 
     await page.save();

@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MarkdownService } from 'ngx-markdown';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 
 @Component({
   selector: 'app-create-page',
@@ -10,6 +11,29 @@ import { Router } from '@angular/router';
 })
 export class CreatePageComponent {
   @ViewChild('toggleCheckbox') toggleCheckbox: ElementRef | undefined;
+  @ViewChild('usernameCheckbox') usernameCheckbox: ElementRef<HTMLInputElement> | undefined;
+
+  getUsernameAnonymousValue(): string {
+    if (this.usernameCheckbox && this.usernameCheckbox.nativeElement.checked) {
+      return 'Username';
+    } else {
+      return 'Anonymous';
+    }
+  }
+  selectedTabLabel = 'Journal'; // Initial selected tab (optional)
+  showPrivacyToggles = true; // Initial visibility state
+  isPublic = true; // Initial state: Public selected
+
+  currentTabIndex = 0;
+  onTabChange(event: MatTabChangeEvent) {
+    this.selectedTabLabel = event.index === 0 ? 'Journal' : event.tab.textLabel;
+    this.showPrivacyToggles = this.selectedTabLabel === 'Journal';
+    this.currentTabIndex = event.index;
+  }
+
+  onPrivacyChange(isPublic: boolean) {
+    this.isPublic = isPublic;
+  }
 
   blogTitle: string = ''
   blogContent: string = '';
@@ -68,7 +92,9 @@ export class CreatePageComponent {
     const dataToBeSent = {
       "title": this.blogTitle,
       "content": this.blogContent,
-      "visibility": isPrivate ? "private" : "public"
+      "visibility": isPrivate ? "private" : "public",
+      "posttype": ["Journal", "Collaberative", "Daily Journal", "Habit Tracker"],
+      "anonymous": this.getUsernameAnonymousValue() === "Anonymous"? true : false,
     }
     this.authService.makeRequest(`page`, 'post', true, { body: dataToBeSent })
       .subscribe(
