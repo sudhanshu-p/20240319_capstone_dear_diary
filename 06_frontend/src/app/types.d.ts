@@ -1,9 +1,20 @@
 interface blogMetadata {
-    url: String,
-    title: String,
-    content: String,
+    url: string,
+    title: string,
+    content: string,
     publish_time: Date,
     last_updated_time: Date,
-    upvoted_by: Array<String>,
-    downvoted_by: Array<String>,
+    upvoted_by: Array<string>,
+    downvoted_by: Array<string>,
+    comments: Array<comment>
+}
+
+interface comment {
+    _id: string,
+    content: string,
+    author_name: string,
+    parent_type: string,
+    replies: Array<comment>,
+    upvoted_by: Array<comment>,
+    downvoted_by: Array<comment>,
 }

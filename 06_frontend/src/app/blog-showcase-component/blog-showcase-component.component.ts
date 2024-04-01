@@ -15,6 +15,7 @@ export class BlogShowcaseComponentComponent {
     last_updated_time: new Date('2023-01-23T19:34:00'),
     upvoted_by: [],
     downvoted_by: [],
+    comments: []
   }
 
   TITLE_MAX_LENGTH = 100
