@@ -31,27 +31,42 @@ async function getPageByUrl(req, res) {
     // For a private page, only the author can view it
     if (page.visibility === "private") {
       // Check if the user is the author of the page
-      const author = await User.findOne({ username: page.author_name });
+      // const author = await User.findOne({ username: page.author_name });
 
-      if (!author) {
-        return res.status(404).send("Page not found");
-      }
+      // if (!author) {
+      return res.status(404).send("Page not found");
+      // }
 
-      const token = req.headers.authorization.split(" ")[1];
-      if(!token) {
-        return res.status(404).send("Page not found");
-      }
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      // const token = req.headers.authorization.split(" ")[1];
+      // if (!token) {
+      //   return res.status(404).send("Page not found");
+      // }
+      // const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      if (decoded.id !== author._id.toString()) {
-        return res.status(404).send("Page not found");
-      }
+      // if (decoded.id !== author._id.toString()) {
+      //   return res.status(404).send("Page not found");
+      // }
 
-      return res.status(200).send(page);
+      // return res.status(200).send(page);
     }
 
+    const full_page = await Page.aggregate(
+      [
+        {
+          $match: { url: "Sudhanshu12-test-blog-029" },
+        },
+        {
+          $lookup: {
+            from: "comments",
+            localField: "comments",
+            foreignField: "_id",
+            as: "comments",
+          },
+        }
+      ]
+    );
 
-    return res.status(200).send(page);
+    return res.status(200).send(full_page[0]);
   } catch (error) {
     console.error(error);
     res.status(500).send("Server error");

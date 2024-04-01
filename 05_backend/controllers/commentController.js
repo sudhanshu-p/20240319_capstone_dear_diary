@@ -5,6 +5,9 @@ const Page = require("../models/Page");
 // Validators
 const commentValidator = require("../validators/Comment");
 
+// Helper
+const { getFullPage } = require("../helpers/helperFunctions");
+
 /** Upvote a page
  * @async
  * @param {Object} req - Request object. Mandatory fields: url
@@ -28,7 +31,8 @@ async function upvotePage(req, res) {
 			page.upvoted_by.splice(index, 1);
 			await page.save();
 
-			return res.status(200).send("Upvote removed");
+			const full_page = await getFullPage(url);
+			return res.status(200).json(full_page);
 		}
 
 		// If the user has downvoted the page, undo the downvote
@@ -40,7 +44,8 @@ async function upvotePage(req, res) {
 		page.upvoted_by.push(req.user.id);
 		await page.save();
 
-		res.status(200).send("Page upvoted");
+		const full_page = await getFullPage(url);
+		res.status(200).json(full_page);
 	} catch (error) {
 		console.error(error);
 		res.status(500).send("Server error");
@@ -70,7 +75,8 @@ async function downvotePage(req, res) {
 			page.downvoted_by.splice(index, 1);
 			await page.save();
 
-			return res.status(200).send("Downvote removed");
+			const full_page = await getFullPage(url);
+			return res.status(200).json(full_page);
 		}
 
 		// If the user has upvoted the page, undo the upvote
@@ -82,7 +88,9 @@ async function downvotePage(req, res) {
 		page.downvoted_by.push(req.user.id);
 		await page.save();
 
-		res.status(200).send("Page downvoted");
+		const full_page = await getFullPage(url);
+
+		res.status(200).json(full_page);
 	} catch (error) {
 		console.error(error);
 		res.status(500).send("Server error");
@@ -114,7 +122,7 @@ async function commentOnPage(req, res) {
 
 		const comment = new Comment({
 			content,
-			author: req.user.id,
+			author_name: req.user.id,
 			parent_type: "post",
 			replies: [],
 			upvoted_by: [],
@@ -126,7 +134,13 @@ async function commentOnPage(req, res) {
 		page.comments.push(comment._id);
 		await page.save();
 
-		res.status(201).send(comment);
+		// Aggregation code to fetch all the commments, their author names, replies and their author names
+		// From each of these respective IDs
+		const full_page = await getFullPage(url);
+
+		console.log(full_page);
+
+		res.status(201).send(full_page);
 	} catch (error) {
 		console.error(error);
 		res.status(500).send("Server error");
@@ -163,7 +177,7 @@ async function upvoteComment(req, res) {
 			comment.upvoted_by.splice(index, 1);
 			await comment.save();
 
-			return res.status(200).send("Upvote removed");
+			return res.status(200).json(comment);
 		}
 
 		// If the user has downvoted the comment, undo the downvote
@@ -175,7 +189,7 @@ async function upvoteComment(req, res) {
 		comment.upvoted_by.push(req.user.id);
 		await comment.save();
 
-		res.status(200).send("Comment upvoted");
+		return res.status(200).json(comment);
 	} catch (error) {
 		console.error(error);
 		res.status(500).send("Server error");
@@ -211,8 +225,7 @@ async function downvoteComment(req, res) {
 			const index = comment.downvoted_by.indexOf(req.user.id);
 			comment.downvoted_by.splice(index, 1);
 			await comment.save();
-
-			return res.status(200).send("Downvote removed");
+			return res.status(200).json(comment);
 		}
 
 		// If the user has upvoted the comment, undo the upvote
@@ -224,7 +237,7 @@ async function downvoteComment(req, res) {
 		comment.downvoted_by.push(req.user.id);
 		await comment.save();
 
-		res.status(200).send("Comment downvoted");
+		return res.status(200).json(comment);
 	}
 	catch (error) {
 		console.error(error);
