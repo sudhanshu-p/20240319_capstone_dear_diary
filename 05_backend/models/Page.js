@@ -12,7 +12,9 @@ const pageSchema = new Schema({
     upvoted_by: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     downvoted_by: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
-    visibility: { type: String, enum: ['private', 'public'], default: 'private' }
+    visibility: { type: String, enum: ['private', 'public'], default: 'private' },
+    posttype: { type: String, enum: ["Journal", "Collaberative", "Daily Journal", "Habit Tracker"] },
+    anonymous: { type: Boolean, default: false}
 });
 
 const Page = mongoose.model('Page', pageSchema);

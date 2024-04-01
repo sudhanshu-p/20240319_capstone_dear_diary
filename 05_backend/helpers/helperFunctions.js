@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require("../models/User")
+const Page = require("../models/Page")
 require('dotenv').config();
 
 /** Verifies the token in the Authorization header
@@ -45,7 +46,6 @@ async function getUserMiddleware(req, res, next) {
     next()
 }
 
-
 function ifAvailable(req,res,next){
     const token = req.headers.authorization.split(" ")[1];
 
@@ -78,4 +78,23 @@ function formatToUrl(username, title) {
     return `${username}-${title.toLowerCase().split(" ").join("-")}`
 }
 
-module.exports = { verifyToken, getUserMiddleware, formatToUrl,ifAvailable };
+async function getFullPage(url) {
+    const full_page = await Page.aggregate(
+        [
+            {
+                $match: { url: "Sudhanshu12-test-blog-029" },
+            },
+            {
+                $lookup: {
+                    from: "comments",
+                    localField: "comments",
+                    foreignField: "_id",
+                    as: "comments",
+                },
+            }
+        ]
+    );
+    return full_page[0];
+}
+
+module.exports = { verifyToken, getUserMiddleware, formatToUrl, getFullPage, ifAvailable };

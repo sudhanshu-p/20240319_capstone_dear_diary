@@ -27,6 +27,7 @@ import { environment } from "../environment.js";
 import { initializeApp } from "firebase/app";
 initializeApp(environment.firebase);
 
+import {MatTabsModule} from '@angular/material/tabs';;
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ initializeApp(environment.firebase);
     ReactiveFormsModule,
     HttpClientModule,
     FormsModule,
-    MarkdownModule.forRoot()
+    MarkdownModule.forRoot(),
+    MatTabsModule
   ],
   providers: [
     provideAnimationsAsync()
