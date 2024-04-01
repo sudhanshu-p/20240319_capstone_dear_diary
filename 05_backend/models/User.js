@@ -5,7 +5,8 @@ const userSchema = new Schema({
     username: { type: String, required: true },
     description: { type: String },
     email: { type: String, required: true },
-    password: { type: String, required: true }
+    password: { type: String, required: true },
+    reminderSettings: { type: Schema.Types.ObjectId, ref: 'Reminder' }
 });
 
 const User = mongoose.model('User', userSchema);
