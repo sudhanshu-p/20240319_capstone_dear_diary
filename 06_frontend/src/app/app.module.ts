@@ -21,19 +21,13 @@ import { SnackbarComponent } from './snackbar/snackbar.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MarkdownModule } from 'ngx-markdown';
 import { CreatePageComponent } from './create-page/create-page.component';
+import { UploadImgComponent } from './upload-img/upload-img.component';
 import { CommonModule } from '@angular/common';
+import { environment } from "../environment.js";
+import { initializeApp } from "firebase/app";
+initializeApp(environment.firebase);
 
-import {MatTabsModule} from '@angular/material/tabs';
-
-import firebase from 'firebase/app'
-import { getMessaging } from 'firebase/messaging';
-import {FirebaseConfig} from './firebase-config'
-
-// Initialize Firebase
-const app = firebase.initializeApp(FirebaseConfig);
-
-// Initialize Firebase Messaging
-const messaging = getMessaging(app);
+import {MatTabsModule} from '@angular/material/tabs';;
 
 @NgModule({
   declarations: [
@@ -49,7 +43,8 @@ const messaging = getMessaging(app);
     LastStepPageComponent,
     BlogPageComponent,
     SnackbarComponent,
-    CreatePageComponent
+    CreatePageComponent,
+    UploadImgComponent
   ],
   imports: [
     BrowserModule,

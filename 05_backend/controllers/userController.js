@@ -27,6 +27,7 @@ async function getUser(req, res) {
 
 		user.pages = pages;
 
+
 		res.status(200).send(user);
 	} catch (error) {
 		console.error(error);
@@ -76,17 +77,77 @@ async function updateUser(req, res) {
  */
 async function getUserByUsername(req, res) {
 	const { username } = req.params;
+	console.log(username);
+	const { user } = req
+	console.log(user);
+	// console.log(user.id);
+
 
 	try {
 		const user = await User.findOne({ username });
+		console.log(user);
 		if (!user) {
 			return res.status(404).send("User not found");
 		}
+
+		const profileData = await User.aggregate([
+			{
+				$match: {
+					username: user.username
+				}
+			},
+			{
+				$lookup: {
+					from: 'follows',
+					localField: '_id',
+					foreignField: 'following',
+					as: 'followerof'
+				}
+			},
+			{
+				$lookup: {
+					from: 'follows',
+					localField: '_id',
+					foreignField: 'follower',
+					as: 'followingto'
+				}
+			},
+			{
+				$addFields: {
+					followersCount: {
+						$size: "$followerof"
+					},
+					followingCount: {
+						$size: "$followingto"
+					},
+					isFollowing: {
+						$anyElementTrue: {
+							$map: {
+								input: "$followerof",
+								as: "eachFollower",
+								in: { $eq: ["$$eachFollower.follower", "66037bbd1733e61d260cea5f"] }
+							}
+						}
+					}
+				}
+			},
+			// {
+			// 	$project: {
+			// 		followersCount: 1,
+			// 		followingCount: 1,
+			// 		isFollowing:1,
+
+
+			// 	}
+			// }
+		])
+		console.log(profileData);
 		// Get the user's pages
 		const pages = await Page.find({ author: user._id });
-		user.pages = pages;
+		// user.pages = pages;
+		// user.profileData = profileData;
 
-		res.status(200).send(user);
+		res.status(200).json({ "user": user, "pages": pages, "followData": profileData });
 	} catch (error) {
 		console.error(error);
 		res.status(500).send("Server error");

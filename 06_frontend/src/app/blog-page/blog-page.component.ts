@@ -60,7 +60,6 @@ export class BlogPageComponent implements OnInit {
         )
     });
   }
-
   upvotePost() {
     this.authService.makeRequest(`pages/upvote/${this.blog.url}`, 'post', true)
       .subscribe(
