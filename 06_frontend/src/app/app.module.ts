@@ -22,6 +22,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MarkdownModule } from 'ngx-markdown';
 import { CreatePageComponent } from './create-page/create-page.component';
 import { CommonModule } from '@angular/common';
+
+import {MatTabsModule} from '@angular/material/tabs';
+
 import firebase from 'firebase/app'
 import { getMessaging } from 'firebase/messaging';
 import {FirebaseConfig} from './firebase-config'
@@ -31,7 +34,6 @@ const app = firebase.initializeApp(FirebaseConfig);
 
 // Initialize Firebase Messaging
 const messaging = getMessaging(app);
-
 
 @NgModule({
   declarations: [
@@ -56,7 +58,8 @@ const messaging = getMessaging(app);
     ReactiveFormsModule,
     HttpClientModule,
     FormsModule,
-    MarkdownModule.forRoot()
+    MarkdownModule.forRoot(),
+    MatTabsModule
   ],
   providers: [
     provideAnimationsAsync()
