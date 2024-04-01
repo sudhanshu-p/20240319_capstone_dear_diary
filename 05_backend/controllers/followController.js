@@ -8,6 +8,8 @@ async function follow(req,res){
         const toFollowUserId = req.body.userid; // ID of the user to be followed
         const followerUserId = req.user.id; 
 
+        console.log(toFollowUserId);
+        console.log(followerUserId);
         // Check if the user to be followed exists
         const userToFollow = await User.findById(toFollowUserId);
         if (!userToFollow) {
