@@ -1,16 +1,39 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const userSchema = new Schema({
+const userSchema = new mongoose.Schema({
+    // Username of the user, must be provided and of type string
     username: { type: String, required: true },
-    description: { type: String },
-    email: { type: String, required: true },
-    password: { type: String, required: true },
-    userImage:{type:String,required:false},
-    fmcToken:{type:String,required:false},
 
+    // Description of the user, optional and of type string
+    description: { type: String },
+
+    // Email of the user, must be provided and of type string
+    email: { type: String, required: true },
+
+    // Password of the user, must be provided and of type string
+    password: { type: String, required: true },
+
+    // User's image, optional and of type string (file path or URL)
+    userImage: { type: String, required: false },
+
+    // Firebase Cloud Messaging Token for push notifications, optional and of type string
+    fmcToken: { type: String, required: false }
 });
 
-const User = mongoose.model('User', userSchema);
+// Defining the schema for the Habit collection
+const HabitSchema = new mongoose.Schema({
+    // Title of the habit, must be provided and of type string
+    title: { type: String, required: true },
 
-module.exports = User;
+    // Frequency of the habit, an array of strings with enumerated values representing days of the week
+    frequency: { type: [String], enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] },
+
+    // Time of the day when the habit is performed, stored as a string
+    time: { type: String }
+});
+ 
+// Creating the model using the defined schema
+const User = mongoose.model('User',userSchema);
+const Habit=mongoose.model('habit',HabitSchema)
+module.exports = User,Habit ;
