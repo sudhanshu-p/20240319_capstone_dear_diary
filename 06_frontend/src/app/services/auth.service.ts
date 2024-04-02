@@ -63,6 +63,11 @@ export class AuthService {
     return !!token;
   }
 
+  /** Helper function that makes the requests for each page
+   * @param {string} endpoint The relative endpoint to which the request is to be made
+   * @param {string} method What type of request is to be made
+   * @param {boolean} authenticated Is the jwt required to be sent or not.
+   */
   makeRequest(endpoint: string, method: string, authenticated: boolean, options?: any): Observable<any> {
     const url = `${this.baseUrl}/${endpoint}`;
 

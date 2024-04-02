@@ -2,8 +2,6 @@ import { Component,OnInit } from '@angular/core';
 import { environment } from "../environment.js";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
-
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
