@@ -1,6 +1,6 @@
 // External dependencies
 require("dotenv").config();
-
+const dateStreaks = require("date-streaks")
 // Models
 const User = require("../models/User");
 const Page = require("../models/Page");
@@ -26,7 +26,15 @@ async function getUser(req, res) {
 		const pages = await Page.find({ author: user._id });
 		console.log(pages)
 		user.pages = pages;
-
+		const publish_dates=[]
+		pages.forEach((page)=>{
+			publish_dates.push(page.publish_time)
+		})
+		streak_summary = dateStreaks.summary({publish_dates})
+		console.log(
+			"Current Streak: "+streak_summary.currentStreak,
+			"Longest Streak: "+streak_summary.longestStreak
+		)
 
 		res.status(200).send(user);
 	} catch (error) {
@@ -148,9 +156,20 @@ async function getUserByUsername(req, res) {
 		])
 		console.log(profileData);
 		// Get the user's pages
-		const pages = await Page.find({ author: user._id });
+		const pages = await Page.find({ author_name: user.username });
 		// user.pages = pages;
 		// user.profileData = profileData;
+
+		// console.log(pages)
+		const publish_dates=[]
+		pages.forEach((page)=>{
+			publish_dates.push(page.publish_time)
+		})
+		streak_summary = dateStreaks.summary({publish_dates})
+		console.log(
+			"Current Streak: "+streak_summary.currentStreak,
+			"Longest Streak: "+streak_summary.longestStreak
+		)
 
 		res.status(200).json({ "user": user, "pages": pages, "followData": profileData });
 	} catch (error) {
