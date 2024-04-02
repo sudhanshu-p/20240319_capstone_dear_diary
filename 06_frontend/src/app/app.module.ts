@@ -21,8 +21,14 @@ import { SnackbarComponent } from './snackbar/snackbar.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MarkdownModule } from 'ngx-markdown';
 import { CreatePageComponent } from './create-page/create-page.component';
+import { UploadImgComponent } from './upload-img/upload-img.component';
 import { CommonModule } from '@angular/common';
-import {MatTabsModule} from '@angular/material/tabs';
+import { environment } from "../environment.js";
+import { initializeApp } from "firebase/app";
+initializeApp(environment.firebase);
+
+import {MatTabsModule} from '@angular/material/tabs';;
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -37,7 +43,8 @@ import {MatTabsModule} from '@angular/material/tabs';
     LastStepPageComponent,
     BlogPageComponent,
     SnackbarComponent,
-    CreatePageComponent
+    CreatePageComponent,
+    UploadImgComponent
   ],
   imports: [
     BrowserModule,

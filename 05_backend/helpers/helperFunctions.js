@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
-const dateStreak = require('date-streaks')
 const User = require("../models/User")
+const Page = require("../models/Page")
 require('dotenv').config();
 
 /** Verifies the token in the Authorization header
@@ -12,14 +12,14 @@ function verifyToken(req, res, next) {
     // Get token from Authorization header of format "Bearer <token>"
     const token = req.headers.authorization.split(" ")[1];
 
-    console.log(token)
+    // console.log(token)
 
     if (!token) {
         return res.status(401).send('No token detected');
     }
 
     try {
-        console.log(token)
+        // console.log(token)
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded;
         next();
@@ -46,6 +46,28 @@ async function getUserMiddleware(req, res, next) {
     next()
 }
 
+function ifAvailable(req,res,next){
+    const token = req.headers.authorization.split(" ")[1];
+
+    // console.log(token)
+
+    if (!token) {
+        next()
+    }
+
+    try {
+        // console.log(token)
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded;
+        next();
+    }
+
+    catch (error) {
+        next()
+    }
+
+}
+
 /** Formats the title to be used in the URL into the format "username-title"
  * @param {String} username - The username of the user
  * @param {String} title - The title of the blog
@@ -56,46 +78,23 @@ function formatToUrl(username, title) {
     return `${username}-${title.toLowerCase().split(" ").join("-")}`
 }
 
-/**
- * 
- * @param {Date} previousPostDate 
- * @param {Date} currentDate 
- */
-// function setStreak(previousPostDate, currentDate) {
-
-//     console.log(previousPostDate.getMonth(), currentDate.getMonth())
-
-//     if (previousPostDate.getMonth() === currentDate.getMonth()) {
-//         console.log(previousPostDate.getDate(), currentDate.getDate())
-//         if (currentDate.getDate() - previousPostDate.getDate() === 1||0) {
-//             console.log("Same month and consicutive date")
-//             return 1
-//         }
-//     } else if (previousPostDate.getMonth() + 1 === currentDate.getMonth()) {
-//         console.log("Next Month")
-//         if (previousPostDate.getMonth() === 2 ) {
-//             if((previousPostDate.getDate() === 28 | 29) && (currentDate.getDate()===1)){
-//                 return 1
-//             }
-//         } else {
-//             if((previousPostDate.getDate() === 30 | 31) && (currentDate.getDate()===1)){
-//                 return 1
-//             }
-
-//         }
-//     } else {
-//         return -1
-//     }
-
-// }
-
-function setStreak(dates) {
-    
-    console.log(dateStreak.summary({dates: dates}))
+async function getFullPage(url) {
+    const full_page = await Page.aggregate(
+        [
+            {
+                $match: { url: "Sudhanshu12-test-blog-029" },
+            },
+            {
+                $lookup: {
+                    from: "comments",
+                    localField: "comments",
+                    foreignField: "_id",
+                    as: "comments",
+                },
+            }
+        ]
+    );
+    return full_page[0];
 }
-dates =  [new Date(2024, 2, 32), new Date(2024, 3, 1)]
-console.log(
-    "output here " + setStreak(dates)
-)
 
-module.exports = { verifyToken, getUserMiddleware, formatToUrl };
+module.exports = { verifyToken, getUserMiddleware, formatToUrl, getFullPage, ifAvailable };

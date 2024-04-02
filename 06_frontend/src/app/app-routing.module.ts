@@ -8,6 +8,7 @@ import { LoginPageComponent } from './auth/login-page/login-page.component';
 import { LastStepPageComponent } from './auth/last-step-page/last-step-page.component';
 import { BlogPageComponent } from './blog-page/blog-page.component';
 import { CreatePageComponent } from './create-page/create-page.component';
+import { UploadImgComponent } from './upload-img/upload-img.component';
 
 const routes: Routes = [
   { path: '', component: HomeProfilePageComponent, data: { "home": true } },
@@ -18,6 +19,7 @@ const routes: Routes = [
   { path: "pages/:url", component: BlogPageComponent },
   { path: "users/:username", component: HomeProfilePageComponent, data: { "home": false } },
   { path: "create", component: CreatePageComponent },
+  {path:'upload',component:UploadImgComponent},
   { path: "**", component: ErrorPageComponent }
 ];
 
