@@ -26,11 +26,14 @@ const HabitSchema = new mongoose.Schema({
     // Title of the habit, must be provided and of type string
     title: { type: String, required: true },
 
-    // Frequency of the habit, an array of strings with enumerated values representing days of the week
-    frequency: { type: [String], enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] },
+    // Frequency of the habit, an array of objects with fields for day and time
+    frequency: [{
+        // Day of the week when the habit is performed
+        day: { type: String, enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] },
 
-    // Time of the day when the habit is performed, stored as a string
-    time: { type: String }
+        // Time of the day when the habit is performed
+        time: { type: String }
+    }]
 });
  
 // Creating the model using the defined schema
