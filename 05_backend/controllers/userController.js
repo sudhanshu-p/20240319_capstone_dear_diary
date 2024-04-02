@@ -24,7 +24,7 @@ async function getUser(req, res) {
 
 	try {
 		const pages = await Page.find({ author: user._id });
-
+		console.log(pages)
 		user.pages = pages;
 
 		res.status(200).send(user);
