@@ -120,13 +120,18 @@ async function getUserByUsername(req, res) {
 					followingCount: {
 						$size: "$followingto"
 					},
+
+
+				}
+
+			},
+			{
+				$addFields: {
 					isFollowing: {
-						$anyElementTrue: {
-							$map: {
-								input: "$followerof",
-								as: "eachFollower",
-								in: { $eq: ["$$eachFollower.follower", "66037bbd1733e61d260cea5f"] }
-							}
+						$cond: {
+							if: { $in: ['66037bbd1733e61d260cea5f', "$followerof.follower"] },
+							then: true,
+							else: false
 						}
 					}
 				}
