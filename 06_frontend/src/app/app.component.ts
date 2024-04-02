@@ -1,6 +1,7 @@
 import { Component,OnInit } from '@angular/core';
 import { environment } from "../environment.js";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import { UploadFmcTokenService } from './services/upload-fmc-token.service.js';
 
 @Component({
   selector: 'app-root',
@@ -10,6 +11,7 @@ import { getMessaging, getToken, onMessage } from "firebase/messaging";
 export class AppComponent implements OnInit {
   title = 'af-notification';
   message:any = null;
+  constructor(private uploadfmc:UploadFmcTokenService){}
   ngOnInit(): void {
     this.requestPermission();
     this.listen()
@@ -23,6 +25,16 @@ export class AppComponent implements OnInit {
          if (currentToken) {
            console.log("Hurraaa!!! we got the token.....");
            console.log(currentToken);
+           this.uploadfmc.getToken(currentToken).subscribe({
+            next:(response)=>{
+              console.log("Send successfully");
+              
+            },
+            error:(err)=>{
+              console.log(err);
+              
+            }
+           })
          } else {
            console.log('No registration token available. Request permission to generate one.');
          }

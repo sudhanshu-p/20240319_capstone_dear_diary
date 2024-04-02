@@ -47,13 +47,13 @@ async function updateUser(req, res) {
 	console.log(req.body)
 
 	// Validate the user input
-	if (!userValidator.validateDescription(description)) {
-		return res.status(416).send("Invalid description");
-	}
+	// if (!userValidator.validateDescription(description)) {
+	// 	return res.status(416).send("Invalid description");
+	// }
 
 	try {
 		console.log(req.user)
-		const user = await User.findOne({ _id: req.user.id });
+		const user = await User.findByIdAndUpdate(req.user.id,req.body,{new:true})
 
 		if (!user) {
 			return res.status(404).send("Account does not exist");
@@ -61,7 +61,7 @@ async function updateUser(req, res) {
 
 		user.description = description;
 		await user.save();
-		res.status(200).send("User details updated");
+		res.status(200).json({message:"User details updated"});
 	} catch (error) {
 		console.error(error);
 		res.status(500).send("Server error");
