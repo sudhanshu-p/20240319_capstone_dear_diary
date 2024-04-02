@@ -1,0 +1,52 @@
+<div class="container">
+    <div class="hero-section">
+        <div class="profile-image">
+            <img src="" alt="">
+        </div>
+        <div class="profile-username">
+            <h1>Sudhanshu 12</h1>
+        </div>
+    </div>
+
+    <div class="main-section">
+        <div class="user-section">
+            <h1>Profile Details</h1>
+            <input type="email" id="email" [disabled]="true" formControlName="email" placeholder="Your Email"
+                class="input-field">
+            <textarea id="user-description"></textarea>
+        </div>
+
+        <div class="habit-tracker-section">
+            <h1>Your Habits</h1>
+            <button (click)="openDialog()">Create a New Habit</button>
+            <h2>Your saved Habits: </h2>
+            <div class="hobby-card">
+                <h2 class="hobby-title">Hobby Title</h2>
+                <div class="hobby-details">
+                    <div class="hobby-info">
+                        <div class="hobby-days">
+                            <span class="day selected">S</span>
+                            <span class="day">M</span>
+                            <span class="day">T</span>
+                            <span class="day">W</span>
+                            <span class="day">T</span>
+                            <span class="day">F</span>
+                            <span class="day">S</span>
+                        </div>
+                        <div class="hobby-time">
+                            <span class="time">6:00 PM</span>
+                        </div>
+                    </div>
+                    <button class="edit-button" (click)="openDialog()">
+                        <svg width="30" height="30" viewBox="0 0 97 97" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M1.49991 95.2042L1.51767 95.222C1.98876 95.6965 2.54901 96.0733 3.1662 96.3306C3.78339 96.5879 4.44535 96.7206 5.11403 96.7212C5.67668 96.7208 6.23544 96.628 6.76804 96.4465L35.7655 86.6099L91.4098 30.9656C94.8115 27.5636 96.7224 22.9497 96.7222 18.1388C96.722 13.3279 94.8106 8.71408 91.4087 5.3124C88.0067 1.91071 83.3927 -0.000210604 78.5818 1.74091e-08C73.7709 0.000210639 69.1571 1.91154 65.7554 5.31352L10.1112 60.9578L0.275325 89.9544C-0.0345045 90.8561 -0.083959 91.8269 0.132632 92.7554C0.349223 93.684 0.823092 94.5326 1.49991 95.2042ZM70.3763 9.93393C72.5555 7.77132 75.5029 6.56037 78.5731 6.56627C81.6432 6.57217 84.586 7.79442 86.7569 9.96539C88.9278 12.1364 90.15 15.0791 90.1558 18.1493C90.1616 21.2195 88.9506 24.1668 86.7879 26.346L79.4707 33.6633L63.0586 17.2512L70.3763 9.93393ZM15.8104 64.4996L58.4382 21.8716L74.8503 38.2837L32.2223 80.9115L7.38472 89.3372L15.8104 64.4996Z"
+                                fill="var(--special-color)" />
+                        </svg>
+
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

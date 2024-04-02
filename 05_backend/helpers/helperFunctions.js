@@ -47,15 +47,14 @@ async function getUserMiddleware(req, res, next) {
 }
 
 function ifAvailable(req,res,next){
-    const token = req.headers.authorization.split(" ")[1];
-
-    // console.log(token)
-
-    if (!token) {
-        next()
-    }
-
     try {
+        const token = req.headers.authorization.split(" ")[1];
+    
+        // console.log(token)
+    
+        if (!token) {
+            next()
+        }
         // console.log(token)
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded;
@@ -82,7 +81,7 @@ async function getFullPage(url) {
     const full_page = await Page.aggregate(
         [
             {
-                $match: { url: "Sudhanshu12-test-blog-029" },
+                $match: { url },
             },
             {
                 $lookup: {

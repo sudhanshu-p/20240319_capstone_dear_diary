@@ -8,7 +8,7 @@ const User = require("../models/User");
 const pageValidator = require("../validators/Page");
 
 // Helper
-const { formatToUrl, verifyToken } = require("../helpers/helperFunctions");
+const { formatToUrl, verifyToken, getFullPage } = require("../helpers/helperFunctions");
 
 /** Get a page by title
  * @async
@@ -19,10 +19,9 @@ const { formatToUrl, verifyToken } = require("../helpers/helperFunctions");
  */
 async function getPageByUrl(req, res) {
   const { url } = req.params;
-
   try {
     const page = await Page.findOne({ url });
-
+    console.log(page)
     // Check if the page exists and is public
     if (!page) {
       return res.status(404).send("Page not found");
@@ -50,23 +49,9 @@ async function getPageByUrl(req, res) {
       // return res.status(200).send(page);
     }
 
-    const full_page = await Page.aggregate(
-      [
-        {
-          $match: { url: "Sudhanshu12-test-blog-029" },
-        },
-        {
-          $lookup: {
-            from: "comments",
-            localField: "comments",
-            foreignField: "_id",
-            as: "comments",
-          },
-        }
-      ]
-    );
+    const full_page = await getFullPage(url)
 
-    return res.status(200).send(full_page[0]);
+    return res.status(200).send(full_page);
   } catch (error) {
     console.error(error);
     res.status(500).send("Server error");

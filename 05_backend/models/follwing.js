@@ -10,8 +10,6 @@ const followSchema = new Schema({
     following: {
         type: Schema.Types.ObjectId,
         ref: User
-
-
     }
 }, { timestamps: true })
 
