@@ -66,6 +66,7 @@ app.post('/sendToDevice', function (req, res) {
       .then((response) => {
         // Token is valid
         console.log('Successfully sent message:', response);
+        res.send(response)
       })
       .catch((error) => {
         if (error.code === 'messaging/invalid-registration-token' ||
