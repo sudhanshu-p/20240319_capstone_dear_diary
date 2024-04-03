@@ -115,51 +115,53 @@ async function createPage(req, res) {
       upvoted_by: [],
       downvoted_by: [],
       comments: [],
-
+      posttype: posttype,
+      anonymous: anonymous
     });
 
     await page.save();
-    // Find all followers of the author
-    const followers = await Follow.find({ following: author._id });
+    res.status(201).send(page);
+    // // Find all followers of the author
+    // const followers = await Follow.find({ following: author._id });
 
-    // Extract the follower user IDs (or tokens, depending on your setup)
-    const followerIds = followers.map(follow => follow.follower);
+    // // Extract the follower user IDs (or tokens, depending on your setup)
+    // const followerIds = followers.map(follow => follow.follower);
 
-    // Fetch FCM tokens for each follower ID
-    const tokens = await User.find({
-      '_id': { $in: followerIds },
-    }).select('fmcToken -_id'); // This selects only the fcmToken field
+    // // Fetch FCM tokens for each follower ID
+    // const tokens = await User.find({
+    //   '_id': { $in: followerIds },
+    // }).select('fmcToken -_id'); // This selects only the fcmToken field
 
-    // Extract just the tokens into an array
-    const tokenList = tokens.map(user => user.fcmToken).filter(token => token != null);
-    // Now, you would send a notification to these tokens
-    const notificationMessage = {
-      title: `${author.username} just published a new page!`,
-      body: title,
-    };
-    for (const token of tokenList) {
-      admin.messaging().send({
-        token: token,
-        notification: notificationMessage
-      })
-        .then((response) => {
-          // Token is valid
-          console.log('Successfully sent message:', response);
-          res.send(response)
-        })
-        .catch((error) => {
-          if (error.code === 'messaging/invalid-registration-token' ||
-            error.code === 'messaging/registration-token-not-registered') {
-            // Token is invalid or expired
-            console.log('The token is invalid or expired:', error);
-          } else {
-            // Other errors
-            console.log('Error sending message:', error);
-          }
-        });
+    // // Extract just the tokens into an array
+    // const tokenList = tokens.map(user => user.fcmToken).filter(token => token != null);
+    // // Now, you would send a notification to these tokens
+    // const notificationMessage = {
+    //   title: `${author.username} just published a new page!`,
+    //   body: title,
+    // };
+    // for (const token of tokenList) {
+    //   admin.messaging().send({
+    //     token: token,
+    //     notification: notificationMessage
+    //   })
+    //     .then((response) => {
+    //       // Token is valid
+    //       console.log('Successfully sent message:', response);
+    //       res.send(response)
+    //     })
+    //     .catch((error) => {
+    //       if (error.code === 'messaging/invalid-registration-token' ||
+    //         error.code === 'messaging/registration-token-not-registered') {
+    //         // Token is invalid or expired
+    //         console.log('The token is invalid or expired:', error);
+    //       } else {
+    //         // Other errors
+    //         console.log('Error sending message:', error);
+    //       }
+    //     });
 
-      res.status(201).send(page);
-    }
+    //   res.status(201).send(page);
+    // }
     } catch (error) {
       console.error(error);
       res.status(500).send("Server error");
