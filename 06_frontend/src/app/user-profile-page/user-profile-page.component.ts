@@ -23,4 +23,22 @@ export class UserProfilePageComponent {
       this.animal = result;
     });
   }
+
+  userData = {
+    username: 'Sudhanshu12',
+    email: 'abcd@gmail.com',
+    description: 'Sample Description of the user'
+  };
+
+  // Why? - To check for if there are changes and then activate the buttons.
+  newDescription = this.userData.description
+
+  saveChanges() {
+    this.userData.description = this.newDescription
+    console.log('Changes saved:', this.userData);
+  }
+
+  resetChanges() {
+    this.newDescription = this.userData.description
+  }
 }
