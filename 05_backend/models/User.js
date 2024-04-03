@@ -13,12 +13,9 @@ const userSchema = new mongoose.Schema({
 
     // Password of the user, must be provided and of type string
     password: { type: String, required: true },
-
-    // User's image, optional and of type string (file path or URL)
-    userImage: { type: String, required: false },
-
-    // Firebase Cloud Messaging Token for push notifications, optional and of type string
-    fmcToken: { type: String, required: false }
+    reminderSettings: { type: Schema.Types.ObjectId, ref: 'Reminder' }
+    userImage:{type:String,required:false},
+    fmcToken:{type:String,required:false},
 });
 
 // Defining the schema for the Habit collection
