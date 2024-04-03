@@ -10,7 +10,7 @@ const Follow = require("../models/follwing")
 const pageValidator = require("../validators/Page");
 
 // Helper
-const { formatToUrl, verifyToken } = require("../helpers/helperFunctions");
+const { formatToUrl, verifyToken, getFullPage } = require("../helpers/helperFunctions");
 
 /** Get a page by title
  * @async
@@ -21,10 +21,9 @@ const { formatToUrl, verifyToken } = require("../helpers/helperFunctions");
  */
 async function getPageByUrl(req, res) {
   const { url } = req.params;
-
   try {
     const page = await Page.findOne({ url });
-
+    console.log(page)
     // Check if the page exists and is public
     if (!page) {
       return res.status(404).send("Page not found");
@@ -52,23 +51,9 @@ async function getPageByUrl(req, res) {
       // return res.status(200).send(page);
     }
 
-    const full_page = await Page.aggregate(
-      [
-        {
-          $match: { url: "Sudhanshu12-test-blog-029" },
-        },
-        {
-          $lookup: {
-            from: "comments",
-            localField: "comments",
-            foreignField: "_id",
-            as: "comments",
-          },
-        }
-      ]
-    );
+    const full_page = await getFullPage(url)
 
-    return res.status(200).send(full_page[0]);
+    return res.status(200).send(full_page);
   } catch (error) {
     console.error(error);
     res.status(500).send("Server error");
@@ -107,7 +92,7 @@ async function createPage(req, res) {
       title: title,
       url: formatToUrl(author.username, title),
       content,
-      author_name: author.username,
+      author_name: author._id,
       published: true,
       publish_time: Date.now(),
       last_updated_time: Date.now(),
@@ -115,51 +100,53 @@ async function createPage(req, res) {
       upvoted_by: [],
       downvoted_by: [],
       comments: [],
-
+      posttype: posttype,
+      anonymous: anonymous
     });
 
     await page.save();
-    // Find all followers of the author
-    const followers = await Follow.find({ following: author._id });
+    res.status(201).send(page);
+    // // Find all followers of the author
+    // const followers = await Follow.find({ following: author._id });
 
-    // Extract the follower user IDs (or tokens, depending on your setup)
-    const followerIds = followers.map(follow => follow.follower);
+    // // Extract the follower user IDs (or tokens, depending on your setup)
+    // const followerIds = followers.map(follow => follow.follower);
 
-    // Fetch FCM tokens for each follower ID
-    const tokens = await User.find({
-      '_id': { $in: followerIds },
-    }).select('fmcToken -_id'); // This selects only the fcmToken field
+    // // Fetch FCM tokens for each follower ID
+    // const tokens = await User.find({
+    //   '_id': { $in: followerIds },
+    // }).select('fmcToken -_id'); // This selects only the fcmToken field
 
-    // Extract just the tokens into an array
-    const tokenList = tokens.map(user => user.fcmToken).filter(token => token != null);
-    // Now, you would send a notification to these tokens
-    const notificationMessage = {
-      title: `${author.username} just published a new page!`,
-      body: title,
-    };
-    for (const token of tokenList) {
-      admin.messaging().send({
-        token: token,
-        notification: notificationMessage
-      })
-        .then((response) => {
-          // Token is valid
-          console.log('Successfully sent message:', response);
-          res.send(response)
-        })
-        .catch((error) => {
-          if (error.code === 'messaging/invalid-registration-token' ||
-            error.code === 'messaging/registration-token-not-registered') {
-            // Token is invalid or expired
-            console.log('The token is invalid or expired:', error);
-          } else {
-            // Other errors
-            console.log('Error sending message:', error);
-          }
-        });
+    // // Extract just the tokens into an array
+    // const tokenList = tokens.map(user => user.fcmToken).filter(token => token != null);
+    // // Now, you would send a notification to these tokens
+    // const notificationMessage = {
+    //   title: `${author.username} just published a new page!`,
+    //   body: title,
+    // };
+    // for (const token of tokenList) {
+    //   admin.messaging().send({
+    //     token: token,
+    //     notification: notificationMessage
+    //   })
+    //     .then((response) => {
+    //       // Token is valid
+    //       console.log('Successfully sent message:', response);
+    //       res.send(response)
+    //     })
+    //     .catch((error) => {
+    //       if (error.code === 'messaging/invalid-registration-token' ||
+    //         error.code === 'messaging/registration-token-not-registered') {
+    //         // Token is invalid or expired
+    //         console.log('The token is invalid or expired:', error);
+    //       } else {
+    //         // Other errors
+    //         console.log('Error sending message:', error);
+    //       }
+    //     });
 
-      res.status(201).send(page);
-    }
+    //   res.status(201).send(page);
+    // }
     } catch (error) {
       console.error(error);
       res.status(500).send("Server error");

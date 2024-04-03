@@ -1,0 +1,114 @@
+.container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.inner-container {
+    background-color: var(--background-color);
+    color: var(--primary-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 2rem;
+}
+
+.inner-container>* {
+    color: inherit;
+}
+
+.dialog-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1rem 0;
+    justify-content: center;
+}
+
+.hobby-title, .time-picker, .day-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.input-field:focus {
+    border: 1px solid var(--special-color);
+    outline: none;
+}
+
+.day-button {
+    width: 100%;
+}
+
+.isSelected {
+    color: var(--special-color);
+}
+
+.day-container {
+    display: flex;
+}
+
+.input-field {
+    width: min(90vw, 400px);
+    padding: 10px;
+    border: 1px solid var(--primary-color);
+    border-radius: 4px;
+    background-color: var(--background-color);
+    color: var(--primary-color);
+}
+
+.time-picker {
+    position: relative;
+    display: inline-block;
+}
+
+.time-input {
+    padding: 10px 15px;
+    border: none;
+    border-bottom: 2px solid var(--special-color);
+    background-color: transparent;
+    font-size: 16px;
+    color: var(--primary-color);
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.time-input:focus {
+    border-bottom-color: var(--special-color);
+}
+
+.time-input::-webkit-calendar-picker-indicator {
+    opacity: 0.8;
+    filter: invert(0.5);
+    cursor: pointer;
+}
+
+.time-input::-webkit-datetime-edit-fields-wrapper {
+    background-color: transparent;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.save-button {
+    --special-color: #087830;
+}
+
+.save-button:disabled {
+    --special-color: var(--slight-gray)
+}
+
+.save-button:disabled:hover {
+    background-color: transparent;
+    color: var(--primary-color);
+}

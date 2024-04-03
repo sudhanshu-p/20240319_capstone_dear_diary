@@ -1,0 +1,106 @@
+<div class="container">
+    <div class="hero-section">
+        <div class="profile-photo">
+            <div class="avatar-container">
+                <img src="https://avatars.githubusercontent.com/u/84870015?v=4" alt="Avatar" class="avatar">
+                <label for="avatar-input" class="edit-avatar-label">
+                    <svg class="edit-icon" viewBox="0 0 24 24">
+                        <path
+                            d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+                    </svg>
+                </label>
+                <input type="file" id="avatar-input" class="avatar-input" accept="image/*"
+                    (change)="onFileSelected($event)">
+            </div>
+            <button class="my-button follow-btn">Follow</button>
+            <div class="follow-info">
+                <span class="followers">
+                    <strong>120</strong> Followers
+                </span>
+                <span class="following">
+                    <strong>85</strong> Following
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-section">
+        <div class="contribution-stats">
+            <div class="stat-card">
+                <div class="stat-value">{{userData.streak.total_blogs}}</div>
+                <div class="stat-label">Total Blogs</div>
+            </div>
+            <div class="stat-card">
+                <div class="streak-container">
+                    <div class="fire-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M13.5 0.67s0.74 2.65 0.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l0.03-0.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5 0.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-0.36 3.6-1.21 4.62-2.58 0.39 1.29 0.59 2.65 0.59 4.04 0 2.65-2.15 4.8-4.8 4.8z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div class="streak-value">{{userData.streak.current}}</div>
+                </div>
+                <div class="stat-label">Current Streak</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{userData.streak.longest}}</div>
+                <div class="stat-label">Longest Streak</div>
+            </div>
+        </div>
+        <div class="profile-edit">
+            <h1>Your Profile</h1>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input class="user-detail-input" type="text" id="username" [value]="userData.username" disabled>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input class="user-detail-input" type="email" id="email" [value]="userData.email" disabled>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" [(ngModel)]="newDescription" rows="4"></textarea>
+            </div>
+            <div class="button-group">
+                <button class="my-button" (click)="saveChanges()"
+                    [disabled]="newDescription===userData.description">Save</button>
+                <button class="my-button" (click)="resetChanges()"
+                    [disabled]="newDescription===userData.description">Reset</button>
+            </div>
+        </div>
+
+        <div class="habit-tracker-section">
+            <h1>Your Habits</h1>
+            <button class="my-button create-habit-button" (click)="openDialog(null)">Create a New Habit</button>
+            <h2>Your saved Habits: </h2>
+            <div class="hobby-card" *ngFor="let habit of userData.habits; let i = index">
+                <h2 class="hobby-title">{{habit.title}}</h2>
+                <div class="hobby-details">
+                    <div class="hobby-info">
+                        <div class="hobby-days">
+                            <span class="day" [class.selected]="habit.frequency[0]">S</span>
+                            <span class="day" [class.selected]="habit.frequency[1]">M</span>
+                            <span class="day" [class.selected]="habit.frequency[2]">T</span>
+                            <span class="day" [class.selected]="habit.frequency[3]">W</span>
+                            <span class="day" [class.selected]="habit.frequency[4]">T</span>
+                            <span class="day" [class.selected]="habit.frequency[5]">F</span>
+                            <span class="day" [class.selected]="habit.frequency[6]">S</span>
+                        </div>
+                        <div class="hobby-time">
+                            <span class="time">{{habit.time}}</span>
+                        </div>
+                    </div>
+                    <button class="edit-button" (click)="openDialog(habit)">
+                        <svg width="30" height="30" viewBox="0 0 97 97" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M1.49991 95.2042L1.51767 95.222C1.98876 95.6965 2.54901 96.0733 3.1662 96.3306C3.78339 96.5879 4.44535 96.7206 5.11403 96.7212C5.67668 96.7208 6.23544 96.628 6.76804 96.4465L35.7655 86.6099L91.4098 30.9656C94.8115 27.5636 96.7224 22.9497 96.7222 18.1388C96.722 13.3279 94.8106 8.71408 91.4087 5.3124C88.0067 1.91071 83.3927 -0.000210604 78.5818 1.74091e-08C73.7709 0.000210639 69.1571 1.91154 65.7554 5.31352L10.1112 60.9578L0.275325 89.9544C-0.0345045 90.8561 -0.083959 91.8269 0.132632 92.7554C0.349223 93.684 0.823092 94.5326 1.49991 95.2042ZM70.3763 9.93393C72.5555 7.77132 75.5029 6.56037 78.5731 6.56627C81.6432 6.57217 84.586 7.79442 86.7569 9.96539C88.9278 12.1364 90.15 15.0791 90.1558 18.1493C90.1616 21.2195 88.9506 24.1668 86.7879 26.346L79.4707 33.6633L63.0586 17.2512L70.3763 9.93393ZM15.8104 64.4996L58.4382 21.8716L74.8503 38.2837L32.2223 80.9115L7.38472 89.3372L15.8104 64.4996Z"
+                                fill="var(--special-color)" />
+                        </svg>
+
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

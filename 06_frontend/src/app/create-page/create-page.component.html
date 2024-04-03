@@ -7,8 +7,8 @@
             <input type="text" id="post-title" placeholder="My new Markdown-based Blog" [(ngModel)]="blogTitle"/>
         </div>
 
-        <mat-tab-group (selectedTabChange)="onTabChange($event)">
-            <mat-tab label="Journal">
+        <mat-tab-group (selectedTabChange)="onTabChange($event)"  >
+            <mat-tab label="Journal" >
               Journal Content
             </mat-tab>
             <mat-tab label="Collaberation">
@@ -45,17 +45,13 @@
             <span class="toggle-label">Public</span>
           </div>
           
-          <div class="privacy-toggle" *ngIf="isPublic">
+          <div class="privacy-toggle" *ngIf="showPrivacyToggles && isPublic">
             <span class="toggle-label">Username</span>
             <label class="switch">
-              <input type="radio" name="username-anonymous" value="Username" #usernameCheckbox>
+              <input type="checkbox" #toggleCheckbox />
               <span class="slider"></span>
             </label>
             <span class="toggle-label">Anonymous</span>
-            <label class="switch">
-              <input type="radio" name="username-anonymous" value="Anonymous">
-              <span class="slider"></span>
-            </label>
           </div>
         <div class="seperator"></div>
         <div class="publish-btn-container">

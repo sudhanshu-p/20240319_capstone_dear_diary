@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+
+// Page Components
 import { HomeProfilePageComponent } from './home-profile-page/home-profile-page.component';
 import { ErrorPageComponent } from './error-page/error-page.component';
 import { SearchPageComponent } from './search-page/search-page.component';
@@ -9,6 +11,7 @@ import { LastStepPageComponent } from './auth/last-step-page/last-step-page.comp
 import { BlogPageComponent } from './blog-page/blog-page.component';
 import { CreatePageComponent } from './create-page/create-page.component';
 import { UploadImgComponent } from './upload-img/upload-img.component';
+import { UserProfilePageComponent } from './user-profile-page/user-profile-page.component';
 
 const routes: Routes = [
   { path: '', component: HomeProfilePageComponent, data: { "home": true } },
@@ -19,7 +22,8 @@ const routes: Routes = [
   { path: "pages/:url", component: BlogPageComponent },
   { path: "users/:username", component: HomeProfilePageComponent, data: { "home": false } },
   { path: "create", component: CreatePageComponent },
-  {path:'upload',component:UploadImgComponent},
+  { path: 'upload', component: UploadImgComponent },
+  { path: 'profile', component: UserProfilePageComponent },
   { path: "**", component: ErrorPageComponent }
 ];
 

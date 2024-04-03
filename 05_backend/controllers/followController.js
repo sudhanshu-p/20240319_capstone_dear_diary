@@ -3,10 +3,10 @@ const User = require('../models/User')
 const Follow = require('../models/follwing')
 const admin = require("firebase-admin");
 
-async function follow(req,res){
+async function follow(req, res) {
     try {
         const toFollowUserId = req.body.userid; // ID of the user to be followed
-        const followerUserId = req.user.id; 
+        const followerUserId = req.user.id;
 
         console.log(toFollowUserId);
         console.log(followerUserId);
@@ -40,7 +40,7 @@ async function follow(req,res){
         await newFollow.save();
 
         // Assuming the user model has a field for the Firebase token
-        const token = userToFollow.fmcToken; 
+        const token = userToFollow.fmcToken;
 
         // Send notification to the followed user
         if (token) {
@@ -51,12 +51,12 @@ async function follow(req,res){
                     body: `You have a new follower!`,
                 },
             })
-            .then((response) => {
-                console.log('Successfully sent message:', response);
-            })
-            .catch((error) => {
-                console.error('Error sending message:', error);
-            });
+                .then((response) => {
+                    console.log('Successfully sent message:', response);
+                })
+                .catch((error) => {
+                    console.error('Error sending message:', error);
+                });
         }
 
         res.status(201).json({ message: 'User followed successfully.' });
@@ -108,4 +108,4 @@ async function unfollow(req, res, next) {
 
 
 
-module.exports = {follow,unfollow}
+module.exports = { follow, unfollow }

@@ -1,0 +1,40 @@
+<div class="container">
+    <div class="inner-container">
+        <h1 class="title" *ngIf="data">Edit your Hobby</h1>
+        <h1 class="title" *ngIf="!data">Create a New Hobby</h1>
+        <div class="dialog-content">
+            <div class="hobby-title">
+                <h2>What is your hobby?</h2>
+                <input type="text" id="hobby-title" placeholder="Hobby Title" class="input-field"
+                    [(ngModel)]="hobbyTitle">
+            </div>
+            <div class="time-picker">
+                <h2>When do you do it?</h2>
+                <br>
+                <input type="time" [(ngModel)]="selectedTime" class="time-input" />
+            </div>
+            <div class="day-selector">
+                <h2>How often do you do it?</h2>
+                <div class="day-container">
+                    <div class="day-item" *ngFor="let day of days; let i = index">
+                        <button class="day-button my-button" [class.isSelected]="isActivityScheduled(i)"
+                            (click)="toggleActivity(i)">{{day}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-actions">
+            <mat-dialog-actions>
+                <button [mat-dialog-close]="{hobbyTitle, schedule, selectedTime}" (click)="saveHabit()"
+                    class="my-button save-button" [disabled]="isDisabled()">{{this.data ? "Save" : "Create"}}
+                    Habit</button>
+            </mat-dialog-actions>
+            <mat-dialog-actions *ngIf="this.data">
+                <button mat-dialog-close class="my-button">Delete Habit</button>
+            </mat-dialog-actions>
+            <mat-dialog-actions>
+                <button mat-dialog-close class="my-button">Close</button>
+            </mat-dialog-actions>
+        </div>
+    </div>
+</div>

@@ -27,7 +27,10 @@ import { environment } from "../environment.js";
 import { initializeApp } from "firebase/app";
 initializeApp(environment.firebase);
 
-import {MatTabsModule} from '@angular/material/tabs';;
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatDialogModule } from '@angular/material/dialog'
+import { UserProfilePageComponent } from './user-profile-page/user-profile-page.component';
+import { DialogComponentComponent } from './dialog-component/dialog-component.component';;
 
 @NgModule({
   declarations: [
@@ -44,7 +47,9 @@ import {MatTabsModule} from '@angular/material/tabs';;
     BlogPageComponent,
     SnackbarComponent,
     CreatePageComponent,
-    UploadImgComponent
+    UploadImgComponent,
+    UserProfilePageComponent,
+    DialogComponentComponent,
   ],
   imports: [
     BrowserModule,
@@ -54,7 +59,8 @@ import {MatTabsModule} from '@angular/material/tabs';;
     HttpClientModule,
     FormsModule,
     MarkdownModule.forRoot(),
-    MatTabsModule
+    MatTabsModule,
+    MatDialogModule
   ],
   providers: [
     provideAnimationsAsync()

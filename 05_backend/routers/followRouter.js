@@ -4,8 +4,8 @@ const { verifyToken } = require("../helpers/helperFunctions");
 const { follow, unfollow } = require("../controllers/followController");
 const router = express.Router();
 
-router.post('/follow',verifyToken,follow)
+router.post('/follow', verifyToken, follow)
 
-router.delete('/unfollow',verifyToken,unfollow)
+router.delete('/unfollow', verifyToken, unfollow)
 
 module.exports = router

@@ -5,7 +5,7 @@ const pageSchema = new Schema({
     url: { type: String, required: true, maxLength: 256, unique: true },
     title: { type: String, required: true, maxLength: 256 },
     content: { type: String, required: true },
-    author_name: { type: String, ref: 'User', required: true },
+    author_name: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     published: { type: Boolean, default: false },
     publish_time: { type: Date },
     last_updated_time: { type: Date, default: Date.now },

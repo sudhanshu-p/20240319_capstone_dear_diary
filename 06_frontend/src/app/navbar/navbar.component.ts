@@ -40,6 +40,9 @@ export class NavbarComponent implements OnInit {
     else if(page === "editor") {
       this.router.navigate(['/create'])
     }
+    else if(page === "profile") {
+      this.router.navigate(['/profile'])
+    }
   }
 
   logOut() {
