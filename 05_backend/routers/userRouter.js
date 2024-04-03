@@ -17,5 +17,14 @@ router.get("/", userController.getUser);
 
 router.get("/:username",ifAvailable, userController.getUserByUsername);
 
+router.post("/habits",verifyToken,userController.postHabits)
+
+router.get("gethabit",verifyToken,userController.getHabitsofUser)
+
+router.post("updatehabit",verifyToken,userController.updateHabitsofUser)
+
+router.delete("deletehabit",verifyToken,userController.deleteHabitsofUser)
+
+router.post('/setreminder',verifyToken, userController.scheduleReminder);
 // Exporting the router
 module.exports = router;
