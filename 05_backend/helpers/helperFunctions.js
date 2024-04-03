@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require("../models/User")
+const Page = require("../models/Page")
 require('dotenv').config();
 
 /** Verifies the token in the Authorization header
@@ -11,14 +12,14 @@ function verifyToken(req, res, next) {
     // Get token from Authorization header of format "Bearer <token>"
     const token = req.headers.authorization.split(" ")[1];
 
-    console.log(token)
+    // console.log(token)
 
     if (!token) {
         return res.status(401).send('No token detected');
     }
 
     try {
-        console.log(token)
+        // console.log(token)
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded;
         next();
@@ -45,6 +46,28 @@ async function getUserMiddleware(req, res, next) {
     next()
 }
 
+function ifAvailable(req,res,next){
+    const token = req.headers.authorization.split(" ")[1];
+
+    // console.log(token)
+
+    if (!token) {
+        next()
+    }
+
+    try {
+        // console.log(token)
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded;
+        next();
+    }
+
+    catch (error) {
+        next()
+    }
+
+}
+
 /** Formats the title to be used in the URL into the format "username-title"
  * @param {String} username - The username of the user
  * @param {String} title - The title of the blog
@@ -55,4 +78,23 @@ function formatToUrl(username, title) {
     return `${username}-${title.toLowerCase().split(" ").join("-")}`
 }
 
-module.exports = { verifyToken, getUserMiddleware, formatToUrl };
+async function getFullPage(url) {
+    const full_page = await Page.aggregate(
+        [
+            {
+                $match: { url: "Sudhanshu12-test-blog-029" },
+            },
+            {
+                $lookup: {
+                    from: "comments",
+                    localField: "comments",
+                    foreignField: "_id",
+                    as: "comments",
+                },
+            }
+        ]
+    );
+    return full_page[0];
+}
+
+module.exports = { verifyToken, getUserMiddleware, formatToUrl, getFullPage, ifAvailable };

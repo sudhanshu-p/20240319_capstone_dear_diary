@@ -8,14 +8,14 @@ const router = express.Router();
 
 // Importing the controller
 const userController = require("../controllers/userController");
-const { verifyToken } = require("../helpers/helperFunctions");
+const { verifyToken, ifAvailable } = require("../helpers/helperFunctions");
 
 // Routes
 router.put("/", verifyToken, userController.updateUser);
 
 router.get("/", userController.getUser);
 
-router.get("/:username", userController.getUserByUsername);
+router.get("/:username",ifAvailable, userController.getUserByUsername);
 
 router.post('/setreminder',verifyToken, userController.scheduleReminder);
 
