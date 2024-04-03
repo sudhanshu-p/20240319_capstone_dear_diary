@@ -3,7 +3,7 @@ require("dotenv").config();
 const dateStreaks = require("date-streaks")
 const cron = require('node-cron');
 // Models
-const User = require("../models/User");
+const { User, Habit } = require("../models/User");
 const Page = require("../models/Page");
 const Reminder = require("../models/Reminder")
 
@@ -19,31 +19,45 @@ const userValidator = require("../validators/User");
  * @returns {Object} - Returns an error if the user does not exist
  */
 async function getUser(req, res) {
-	const user = req.user;
+    let user = req.user;
 
-	if (!user) {
-		return res.status(404).send("Account does not exist");
-	}
+    try {
+        const pages = await Page.find({ author_name: user._id });
+        console.log(pages)
+        user.pages = pages;
+        const publish_dates = []
+        pages.forEach((page) => {
+            publish_dates.push(page.publish_time)
+        })
+        streak_summary = dateStreaks.summary({ publish_dates })
+        console.log(streak_summary)
 
-	try {
-		const pages = await Page.find({ author: user._id });
-		console.log(pages)
-		user.pages = pages;
-		const publish_dates=[]
-		pages.forEach((page)=>{
-			publish_dates.push(page.publish_time)
-		})
-		streak_summary = dateStreaks.summary({publish_dates})
-		console.log(
-			"Current Streak: "+streak_summary.currentStreak,
-			"Longest Streak: "+streak_summary.longestStreak
-		)
+        user = await User.aggregate([
+            {
+                $match: { _id: user._id }
+            },
+            {
+                $lookup: {
+                    from: 'habits',
+                    localField: 'habits',
+                    foreignField: '_id',
+                    as: 'habits'
+                }
+            }
+        ])
 
-		res.status(200).send(user);
-	} catch (error) {
-		console.error(error);
-		res.status(500).send("Server error");
-	}
+        user = user[0]
+        user.streak = {
+            current: streak_summary.currentStreak,
+            longest: streak_summary.longestStreak,
+            total_blogs: pages.length
+        }
+
+        res.status(200).json(user);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server error");
+    }
 }
 
 /** Update user details
@@ -54,29 +68,30 @@ async function getUser(req, res) {
  * @returns {Object} - Returns an error if the user details are not successfully updated
  */
 async function updateUser(req, res) {
-	const { description } = req.body;
-	console.log(req.body)
+    const { description } = req.body;
+    console.log(req.body)
 
-	// Validate the user input
-	if (!userValidator.validateDescription(description)) {
-		return res.status(416).send("Invalid description");
-	}
+    // Validate the user input
+    if (!userValidator.validateDescription(description)) {
+        return res.status(416).send("Invalid description");
+    }
 
-	try {
-		console.log(req.user)
-		const user = await User.findOne({ _id: req.user.id });
+    try {
+        console.log(req.user)
+        const user = await User.findOne({ _id: req.user.id });
 
-		if (!user) {
-			return res.status(404).send("Account does not exist");
-		}
+        console.log(user)
+        if (!user) {
+            return res.status(404).send("Account does not exist");
+        }
 
-		user.description = description;
-		await user.save();
-		res.status(200).send("User details updated");
-	} catch (error) {
-		console.error(error);
-		res.status(500).send("Server error");
-	}
+        user.description = description;
+        await user.save();
+        res.status(200).json(user);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server error");
+    }
 }
 
 /** Get user details by username
@@ -87,230 +102,182 @@ async function updateUser(req, res) {
  * @returns {Object} - Returns an error if the user does not exist
  */
 async function getUserByUsername(req, res) {
-	const { username } = req.params;
-	console.log(username);
-	const { user } = req
-	console.log(user);
-	// console.log(user.id);
+    const { username } = req.params;
+    console.log(username);
+    const { user } = req
+    console.log(user);
+    // console.log(user.id);
 
 
-	try {
-		const user = await User.findOne({ username });
-		console.log(user);
-		if (!user) {
-			return res.status(404).send("User not found");
-		}
+    try {
+        const user = await User.findOne({ username });
+        console.log(user);
+        if (!user) {
+            return res.status(404).send("User not found");
+        }
 
-		const profileData = await User.aggregate([
-			{
-				$match: {
-					username: user.username
-				}
-			},
-			{
-				$lookup: {
-					from: 'follows',
-					localField: '_id',
-					foreignField: 'following',
-					as: 'followerof'
-				}
-			},
-			{
-				$lookup: {
-					from: 'follows',
-					localField: '_id',
-					foreignField: 'follower',
-					as: 'followingto'
-				}
-			},
-			{
-				$addFields: {
-					followersCount: {
-						$size: "$followerof"
-					},
-					followingCount: {
-						$size: "$followingto"
-					},
-
-
-				}
-
-			},
-			{
-				$addFields: {
-					isFollowing: {
-						$cond: {
-							if: { $in: ['66037bbd1733e61d260cea5f', "$followerof.follower"] },
-							then: true,
-							else: false
-						}
-					}
-				}
-			},
-			// {
-			// 	$project: {
-			// 		followersCount: 1,
-			// 		followingCount: 1,
-			// 		isFollowing:1,
+        const profileData = await User.aggregate([
+            {
+                $match: {
+                    username: user.username
+                }
+            },
+            {
+                $lookup: {
+                    from: 'follows',
+                    localField: '_id',
+                    foreignField: 'following',
+                    as: 'followerof'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'follows',
+                    localField: '_id',
+                    foreignField: 'follower',
+                    as: 'followingto'
+                }
+            },
+            {
+                $addFields: {
+                    followersCount: {
+                        $size: "$followerof"
+                    },
+                    followingCount: {
+                        $size: "$followingto"
+                    },
 
 
-			// 	}
-			// }
-		])
-		console.log(profileData);
-		// Get the user's pages
-		const pages = await Page.find({ author_name: user.username });
-		// user.pages = pages;
-		// user.profileData = profileData;
+                }
 
-		// console.log(pages)
-		const publish_dates=[]
-		pages.forEach((page)=>{
-			publish_dates.push(page.publish_time)
-		})
-		streak_summary = dateStreaks.summary({publish_dates})
-		console.log(
-			"Current Streak: "+streak_summary.currentStreak,
-			"Longest Streak: "+streak_summary.longestStreak
-		)
+            },
+            {
+                $addFields: {
+                    isFollowing: {
+                        $cond: {
+                            if: { $in: ['66037bbd1733e61d260cea5f', "$followerof.follower"] },
+                            then: true,
+                            else: false
+                        }
+                    }
+                }
+            },
+            // {
+            // 	$project: {
+            // 		followersCount: 1,
+            // 		followingCount: 1,
+            // 		isFollowing:1,
 
-		res.status(200).json({ "user": user, "pages": pages, "followData": profileData });
-	} catch (error) {
-		console.error(error);
-		res.status(500).send("Server error");
-	}
+
+            // 	}
+            // }
+        ])
+        console.log(profileData);
+        // Get the user's pages
+        const pages = await Page.find({ author_name: user.username });
+        // user.pages = pages;
+        // user.profileData = profileData;
+
+        // console.log(pages)
+        const publish_dates = []
+        pages.forEach((page) => {
+            publish_dates.push(page.publish_time)
+        })
+        streak_summary = dateStreaks.summary({ publish_dates })
+        console.log(
+            "Current Streak: " + streak_summary.currentStreak,
+            "Longest Streak: " + streak_summary.longestStreak
+        )
+
+        res.status(200).json({ "user": user, "pages": pages, "followData": profileData });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server error");
+    }
 }
 
 // Define an asynchronous function to handle creating a new habit
-async function postHabits(req, res) {
+async function createHabit(req, res) {
+    const { title, frequency, time } = req.body;
+    const user = req.user
     try {
-        // Retrieve user details from the database based on the user ID extracted from the token
-        const user = await User.findOne({ _id: req.user.id });
-
-        // If user does not exist, respond with status code 404 and a message indicating the account does not exist
-        if (!user) {
-            return res.status(404).send("Account does not exist");
-        }
-
-        // Extract data (title, frequency, time) from request body
-        const { title, frequency, time } = req.body;
-
         // Create a new habit using the Habit model and provided data
-        const habit = await Habit.create({ title, frequency, time, userId: req.user.id });
+        const habit = await Habit.create({ title, frequency, time });
 
-        // Respond with status code 201 (created) and JSON object containing the created habit
+        // Add the created habit to the user's list of habits
+        user.habits.push(habit._id);
+        await user.save();
+
         return res.status(201).json({ habit });
     } catch (error) {
-        // If an error occurs during the process, respond with status code 500 (internal server error)
-        // and send a JSON object containing the error message
         return res.status(500).json({ error: error.message });
     }
 }
 
+async function updateHabit(req, res) {
+    const user = req.user;
+    const { id } = req.params;
+    const { title, frequency, time } = req.body;
 
-async function getHabitsofUser(req, res) {
-	try {
-        // Extract habit ID from the request parameters
-        const { id } = req.params;
-        
-        // Assuming you have middleware to extract user ID from token
-        const userId = req.user.id; // Extract the user ID from the token
+    try {
+        // Find the habit by ID
+        const habit = await Habit.findOne({ _id: id });
 
-        // Find the habit with the provided ID that belongs to the current user
-        const habit = await Habit.findOne({ _id: id, userId });
-
-        // If habit is not found, respond with status code 404 and a message indicating habit not found
         if (!habit) {
             return res.status(404).json({ message: 'Habit not found' });
         }
 
-        // Respond with status code 200 (OK) and JSON object containing the habit
-        return res.json({ habit });
-    } catch (error) {
-        // If an error occurs during the process, respond with status code 500 (internal server error)
-        // and send a JSON object containing the error message
+        // Check if the habit belongs to the current user
+        if (!user.habits.includes(id)) {
+            return res.status(403).json({ message: 'You are not authorized to update this habit' });
+        }
+
+        // Update the habit with the provided data 
+        habit.title = title;
+        habit.frequency = frequency;
+        habit.time = time;
+        await habit.save();
+
+        return res.status(200).json({ habit });
+    }
+    catch (error) {
+        console.error(error);
         return res.status(500).json({ error: error.message });
     }
-
 }
-async function updateHabitsofUser(req, res){
-	try {
-        // Extract habit ID from the request parameters
-        const { id } = req.params;
-        
-        // Extract data (title, frequency, time) from request body
-        const { title, frequency, time } = req.body;
-        
-        // Assuming you have middleware to extract user ID from token
-        const userId = req.user.id; // Extract the user ID from the token
 
-        // Find and update the habit with the provided ID that belongs to the current user
-        const habit = await Habit.findOneAndUpdate({ _id: id, userId }, { title, frequency, time }, { new: true });
+async function deleteHabit(req, res) {
+    const user = req.user;
+    const { id } = req.body;
 
-        // If habit is not found, respond with status code 404 and a message indicating habit not found
+    try {
+        // Find the habit by ID
+        const habit = await Habit.findOne({ _id: id });
+
         if (!habit) {
             return res.status(404).json({ message: 'Habit not found' });
         }
 
-        // Respond with status code 200 (OK) and JSON object containing the updated habit
-        return res.json({ habit });
-    } catch (error) {
-        // If an error occurs during the process, respond with status code 500 (internal server error)
-        // and send a JSON object containing the error message
-        return res.status(500).json({ error: error.message });
-    }
-}
-async function updateHabitsofUser(req, res){
-	try {
-        // Extract habit ID from the request parameters
-        const { id } = req.params;
-        
-        // Assuming you have middleware to extract user ID from token
-        const userId = req.user.id; // Extract the user ID from the token
-
-        // Find and delete the habit with the provided ID that belongs to the current user
-        const habit = await Habit.findOneAndDelete({ _id: id, userId });
-
-        // If habit is not found, respond with status code 404 and a message indicating habit not found
-        if (!habit) {
-            return res.status(404).json({ message: 'Habit not found' });
+        // Check if the habit belongs to the current user
+        if (!user.habits.includes(id)) {
+            return res.status(403).json({ message: 'You are not authorized to delete this habit' });
         }
 
-        // Respond with status code 200 (OK) and JSON object containing a success message
-        return res.json({ message: 'Habit deleted successfully' });
-    } catch (error) {
-        // If an error occurs during the process, respond with status code 500 (internal server error)
-        // and send a JSON object containing the error message
+        // Remove the habit from the user's list of habits
+        user.habits = user.habits.filter(habitId => habitId.toString() !== id);
+        await user.save();
+
+        // Delete the habit from the database
+        await habit.remove();
+
+        return res.status(200).json({ message: 'Habit deleted successfully' });
+    }
+    catch (error) {
+        console.error(error);
         return res.status(500).json({ error: error.message });
     }
-
 }
 
-async function deleteHabitsofUser(req, res){try {
-	// Extract habit ID from the request parameters
-	const { id } = req.params;
-	
-	// Assuming you have middleware to extract user ID from token
-	const userId = req.user.id; // Extract the user ID from the token
-
-	// Find and delete the habit with the provided ID that belongs to the current user
-	const habit = await Habit.findOneAndDelete({ _id: id, userId });
-
-	// If habit is not found, respond with status code 404 and a message indicating habit not found
-	if (!habit) {
-		return res.status(404).json({ message: 'Habit not found' });
-	}
-
-	// Respond with status code 200 (OK) and JSON object containing a success message
-	return res.json({ message: 'Habit deleted successfully' });
-} catch (error) {
-	// If an error occurs during the process, respond with status code 500 (internal server error)
-	// and send a JSON object containing the error message
-	return res.status(500).json({ error: error.message });
-}
-
-
-}
 // Function to convert user-friendly schedule format to cron format
 function convertScheduleToCron(schedule) {
     // Ensure schedule is a non-null string
@@ -355,8 +322,6 @@ function convertScheduleToCron(schedule) {
 
     return cronSchedule;
 }
-
-
 
 async function scheduleReminder(req, res) {
     try {
@@ -407,18 +372,17 @@ async function scheduleReminder(req, res) {
         // Send the response with the created reminders
         res.status(200).send({ createdReminders });
     } catch (error) {
-        console.error('Error scheduling reminders:', error.message);
-        res.status(400).send('Error scheduling reminders');
+        console.error('Error scheduling reminders:', error)
+        res.status(500).send({ error });
     }
 }
 // Exporting the functions
 module.exports = {
-	getUser,
-	updateUser,
-	getUserByUsername,
-	postHabits,
-	getHabitsofUser,
-	updateHabitsofUser,
-	deleteHabitsofUser,
-	scheduleReminder,
+    getUser,
+    updateUser,
+    getUserByUsername,
+    createHabit,
+    updateHabit,
+    deleteHabit,
+    // scheduleReminder,
 };

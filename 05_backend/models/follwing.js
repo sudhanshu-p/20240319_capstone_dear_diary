@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const User = require('./User');
+const { User } = require('./User');
 const Schema = mongoose.Schema;
 
 const followSchema = new Schema({
@@ -10,8 +10,6 @@ const followSchema = new Schema({
     following: {
         type: Schema.Types.ObjectId,
         ref: User
-
-
     }
 }, { timestamps: true })
 

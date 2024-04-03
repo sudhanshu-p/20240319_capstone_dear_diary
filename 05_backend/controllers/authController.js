@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 // Model
-const User = require("../models/User");
+const { User } = require("../models/User");
 
 // Validators
 const userValidator = require("../validators/User");

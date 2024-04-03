@@ -13,12 +13,12 @@ const router = express.Router();
 const pageController = require("../controllers/pageController");
 
 // Internal dependencies
-const { verifyToken, getUserMiddleware } = require("../helpers/helperFunctions")
+const { verifyToken, getUserMiddleware, ifAvailable } = require("../helpers/helperFunctions")
 
 // Routes
-router.get("/search", pageController.searchPages);
+router.get("/search", ifAvailable, pageController.searchPages);
 
-router.get("/:url", pageController.getPageByUrl);
+router.get("/:url", ifAvailable, pageController.getPageByUrl);
 
 router.post("/", verifyToken, getUserMiddleware, pageController.createPage);
 
