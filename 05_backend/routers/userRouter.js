@@ -17,5 +17,7 @@ router.get("/", userController.getUser);
 
 router.get("/:username",ifAvailable, userController.getUserByUsername);
 
+router.post('/setreminder',verifyToken, userController.scheduleReminder);
+
 // Exporting the router
 module.exports = router;
