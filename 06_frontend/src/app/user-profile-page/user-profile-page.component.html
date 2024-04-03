@@ -13,14 +13,18 @@
                     (change)="onFileSelected($event)">
 
             </div>
+<<<<<<< HEAD
+            <!-- <button class="my-button follow-btn">Follow</button> -->
+=======
             <button class="my-button" *ngIf="fileSelected" (click)="confirmImage()">Confirm Image</button>
             <button class="my-button follow-btn">Follow</button>
+>>>>>>> d1286b87d5efd562c15dff8c6870b8c5eecbdc85
             <div class="follow-info">
                 <span class="followers">
-                    <strong>120</strong> Followers
+                    <strong>{{followDetails.followersCount}}</strong> Followers
                 </span>
                 <span class="following">
-                    <strong>85</strong> Following
+                    <strong>{{followDetails.followingCount}}</strong> Following
                 </span>
             </div>
         </div>
@@ -90,7 +94,7 @@
                             <span class="day" [class.selected]="habit.frequency[6]">S</span>
                         </div>
                         <div class="hobby-time">
-                            <span class="time">{{habit.time}}</span>
+                            <span class="time">{{habit.time || "--:--"}}</span>
                         </div>
                     </div>
                     <button class="edit-button" (click)="openDialog(habit)">
@@ -102,6 +106,10 @@
 
                     </button>
                 </div>
+            </div>
+
+            <div class="no-habits" *ngIf="userData.habits.length===0">
+                <h2>No Habits!</h2>
             </div>
         </div>
     </div>

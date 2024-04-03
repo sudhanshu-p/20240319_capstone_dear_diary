@@ -44,15 +44,40 @@ async function getUser(req, res) {
                     foreignField: '_id',
                     as: 'habits'
                 }
-            }
+            },
+            {
+                '$lookup': {
+                    'from': 'follows',
+                    'localField': '_id',
+                    'foreignField': 'following',
+                    'as': 'followerof'
+                }
+            }, {
+                '$lookup': {
+                    'from': 'follows',
+                    'localField': '_id',
+                    'foreignField': 'follower',
+                    'as': 'followingto'
+                }
+            }, {
+                '$addFields': {
+                    'followersCount': {
+                        '$size': '$followerof'
+                    },
+                    'followingCount': {
+                        '$size': '$followingto'
+                    }
+                }
+            },
         ])
-
         user = user[0]
         user.streak = {
             current: streak_summary.currentStreak,
             longest: streak_summary.longestStreak,
             total_blogs: pages.length
         }
+
+        console.log(user)
 
         res.status(200).json(user);
     } catch (error) {
@@ -69,29 +94,29 @@ async function getUser(req, res) {
  * @returns {Object} - Returns an error if the user details are not successfully updated
  */
 async function updateUser(req, res) {
-	const { description } = req.body;
-	console.log(req.body)
+    const { description } = req.body;
+    console.log(req.body)
 
-	// Validate the user input
-	// if (!userValidator.validateDescription(description)) {
-	// 	return res.status(416).send("Invalid description");
-	// }
+    // Validate the user input
+    // if (!userValidator.validateDescription(description)) {
+    // 	return res.status(416).send("Invalid description");
+    // }
 
-	try {
-		console.log(req.user)
-		const user = await User.findByIdAndUpdate(req.user.id,req.body,{new:true})
+    try {
+        console.log(req.user)
+        const user = await User.findByIdAndUpdate(req.user.id, req.body, { new: true })
 
-		if (!user) {
-			return res.status(404).send("Account does not exist");
-		}
+        if (!user) {
+            return res.status(404).send("Account does not exist");
+        }
 
-		user.description = description;
-		await user.save();
-		res.status(200).json({message:"User details updated"});
-	} catch (error) {
-		console.error(error);
-		res.status(500).send("Server error");
-	}
+        user.description = description;
+        await user.save();
+        res.status(200).json({ message: "User details updated" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server error");
+    }
 }
 
 /** Get user details by username
@@ -102,78 +127,84 @@ async function updateUser(req, res) {
  * @returns {Object} - Returns an error if the user does not exist
  */
 async function getUserByUsername(req, res) {
-	const { username } = req.params;
-	console.log(username);
-	const { user } = req
-	const userId = user.id
-	console.log(userId);
+    // console.log(req.params)
+    const username = req.params.username;
+    console.log(username);
+    let user
 
+    try {
+        let userId
+        if (req.user) {
+            userId = req.user.id
+        }
 
-	try {
-		const user = await User.findOne({ username });
-		console.log(user);
-		if (!user) {
-			return res.status(404).send("User not found");
-		}
+        user = await User.findOne({ username });
+        console.log(user);
+        if (!user) {
+            return res.status(404).send("User not found");
+        }
 
-		const profileData = await User.aggregate([
-			{
-			  '$match': {
-				'username': username
-			  }
-			}, {
-			  '$lookup': {
-				'from': 'follows', 
-				'localField': '_id', 
-				'foreignField': 'following', 
-				'as': 'followerof'
-			  }
-			}, {
-			  '$lookup': {
-				'from': 'follows', 
-				'localField': '_id', 
-				'foreignField': 'follower', 
-				'as': 'followingto'
-			  }
-			}, {
-			  '$addFields': {
-				'followersCount': {
-				  '$size': '$followerof'
-				}, 
-				'followingCount': {
-				  '$size': '$followingto'
-				}, 
-				'isfollowing': {
-				  '$cond': {
-					'if': {
-					  '$in': [
-						new mongoose.Types.ObjectId(userId), '$followerof.follower'
-					  ]
-					}, 
-					'then': true, 
-					'else': false
-				  }
-				}
-			  }
-			},
-		  ])
-		console.log(profileData);
-		// Get the user's pages
-		const pages = await Page.find({ author: user._id });
-		// user.pages = pages;
-		// user.profileData = profileData;
+        const profileData = await User.aggregate([
+            {
+                '$match': {
+                    'username': username
+                }
+            }, {
+                '$lookup': {
+                    'from': 'follows',
+                    'localField': '_id',
+                    'foreignField': 'following',
+                    'as': 'followerof'
+                }
+            }, {
+                '$lookup': {
+                    'from': 'follows',
+                    'localField': '_id',
+                    'foreignField': 'follower',
+                    'as': 'followingto'
+                }
+            }, {
+                '$addFields': {
+                    'followersCount': {
+                        '$size': '$followerof'
+                    },
+                    'followingCount': {
+                        '$size': '$followingto'
+                    },
+                    'isfollowing': {
+                        '$cond': {
+                            'if': {
+                                '$in': [
+                                    new mongoose.Types.ObjectId(userId), '$followerof.follower'
+                                ]
+                            },
+                            'then': true,
+                            'else': false
+                        }
+                    }
+                }
+            },
+        ])
+        // Get the user's pages
+        const pages = await Page.find({ author_name: user._id });
+        // user.pages = pages;
+        // user.profileData = profileData;
         // console.log(pages)
         const publish_dates = []
         pages.forEach((page) => {
             publish_dates.push(page.publish_time)
         })
         streak_summary = dateStreaks.summary({ publish_dates })
-        console.log(
-            "Current Streak: " + streak_summary.currentStreak,
-            "Longest Streak: " + streak_summary.longestStreak
-        )
 
-        res.status(200).json({ "user": user, "pages": pages, "followData": profileData });
+        const streak = {
+            current: streak_summary.currentStreak,
+            longest: streak_summary.longestStreak,
+            total_blogs: pages.length
+        };
+
+        console.log(streak)
+
+        res.status(200).json({ "user": user, "pages": pages, "followData": profileData[0], "streak": streak });
     } catch (error) {
         console.error(error);
         res.status(500).send("Server error");

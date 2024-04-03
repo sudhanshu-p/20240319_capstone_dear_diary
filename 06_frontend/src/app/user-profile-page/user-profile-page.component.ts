@@ -17,6 +17,7 @@ export class UserProfilePageComponent implements OnInit {
   file:any;
 
   userData: User = {
+    _id: "",
     username: "",
     userImage:'',
     habits: [],
@@ -29,6 +30,11 @@ export class UserProfilePageComponent implements OnInit {
     }
   }
 
+  followDetails = {
+    followersCount: 0,
+    followingCount: 0
+  }
+
   constructor(public dialog: MatDialog, private upload: UploadService, private authService: AuthService,private updateuser:UpdateUserService) { }
 
   ngOnInit(): void {
@@ -36,6 +42,10 @@ export class UserProfilePageComponent implements OnInit {
       .subscribe((response) => {
         console.log(response)
         this.userData = response
+        this.followDetails = {
+          followersCount: response.followersCount,
+          followingCount: response.followingCount
+        }
         this.newDescription = this.userData.description
       },
         (error) => {
@@ -50,12 +60,22 @@ export class UserProfilePageComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // If result is found -> Save habit or Delete habit
       if (result) {
-        this.userData.habits.push({
-          title: result.hobbyTitle,
-          frequency: result.schedule,
-          time: result.selectedTime
-        })
+        // Case of Save habit
+        if (result.hobbyTitle) {
+          this.userData.habits.push({
+            _id: result._id,
+            title: result.hobbyTitle,
+            frequency: result.schedule,
+            time: result.selectedTime
+          })
+        }
+        else if (result._id) {
+          console.log(this.userData)
+          this.userData.habits = this.userData.habits.filter((habit: Hobby) => habit._id.toString() !== result._id);
+          console.log(this.userData)
+        }
       }
     });
   }

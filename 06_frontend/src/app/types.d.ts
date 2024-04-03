@@ -20,6 +20,7 @@ interface comment {
 }
 
 interface User {
+    _id: string,
     username: string,
     userImage:string,
     habits: Array,
@@ -35,5 +36,6 @@ interface User {
 interface Hobby {
     title: string,
     frequency: Array<boolean>,
-    time: string
+    time: string,
+    _id: string,
 }

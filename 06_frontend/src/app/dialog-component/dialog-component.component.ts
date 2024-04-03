@@ -39,12 +39,13 @@ export class DialogComponentComponent {
   }
 
   saveHabit() {
-    const dataToBeSent: Hobby = {
+    const dataToBeSent = {
       title: this.hobbyTitle,
       frequency: this.schedule,
-      time: this.selectedTime
+      time: this.selectedTime,
     }
 
+    // Create a habit case
     if (!this.data) {
       this.authService.makeRequest(`users/habit`, 'post', true, { body: dataToBeSent })
         .subscribe(
@@ -56,6 +57,7 @@ export class DialogComponentComponent {
           }
         )
     }
+    // Edit a habit case
     else {
       this.authService.makeRequest(`users/habit`, 'put', true, { body: dataToBeSent })
         .subscribe(
@@ -71,5 +73,20 @@ export class DialogComponentComponent {
 
   isDisabled() {
     return this.hobbyTitle.length <= 1
+  }
+
+  deleteHabit() {
+    const dataToBeSent = {
+      id: this.data?._id
+    }
+    this.authService.makeRequest(`users/habit`, 'delete', true, { body: dataToBeSent})
+      .subscribe(
+        (response) => {
+          console.log(response)
+        },
+        (error) => {
+          console.error(error)
+        }
+      )
   }
 }

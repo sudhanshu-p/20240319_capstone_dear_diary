@@ -25,12 +25,12 @@
         </div>
         <div class="form-actions">
             <mat-dialog-actions>
-                <button [mat-dialog-close]="{hobbyTitle, schedule, selectedTime}" (click)="saveHabit()"
+                <button [mat-dialog-close]="{_id: this.data?._id, hobbyTitle, schedule, selectedTime}" (click)="saveHabit()"
                     class="my-button save-button" [disabled]="isDisabled()">{{this.data ? "Save" : "Create"}}
                     Habit</button>
             </mat-dialog-actions>
             <mat-dialog-actions *ngIf="this.data">
-                <button mat-dialog-close class="my-button">Delete Habit</button>
+                <button [mat-dialog-close]="{_id: this.data._id}" class="my-button" (click)="deleteHabit()">Delete Habit</button>
             </mat-dialog-actions>
             <mat-dialog-actions>
                 <button mat-dialog-close class="my-button">Close</button>
