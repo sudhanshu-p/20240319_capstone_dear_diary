@@ -27,6 +27,7 @@ export class UploadService {
         // Handle successful uploads on complete
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           console.log('File available at', downloadURL);
+
           // Here, you can call a method to save the URL to your backend or do something else with it
         });
       }

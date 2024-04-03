@@ -30,7 +30,8 @@ initializeApp(environment.firebase);
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialogModule } from '@angular/material/dialog'
 import { UserProfilePageComponent } from './user-profile-page/user-profile-page.component';
-import { DialogComponentComponent } from './dialog-component/dialog-component.component';;
+import { DialogComponentComponent } from './dialog-component/dialog-component.component';
+import { UserDisplayPageComponent } from './user-display-page/user-display-page.component';;
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import { DialogComponentComponent } from './dialog-component/dialog-component.co
     UploadImgComponent,
     UserProfilePageComponent,
     DialogComponentComponent,
+    UserDisplayPageComponent,
   ],
   imports: [
     BrowserModule,

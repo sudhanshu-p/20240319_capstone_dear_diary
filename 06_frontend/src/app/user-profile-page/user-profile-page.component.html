@@ -15,10 +15,10 @@
             <!-- <button class="my-button follow-btn">Follow</button> -->
             <div class="follow-info">
                 <span class="followers">
-                    <strong>120</strong> Followers
+                    <strong>{{followDetails.followersCount}}</strong> Followers
                 </span>
                 <span class="following">
-                    <strong>85</strong> Following
+                    <strong>{{followDetails.followingCount}}</strong> Following
                 </span>
             </div>
         </div>
@@ -100,6 +100,10 @@
 
                     </button>
                 </div>
+            </div>
+
+            <div class="no-habits" *ngIf="userData.habits.length===0">
+                <h2>No Habits!</h2>
             </div>
         </div>
     </div>

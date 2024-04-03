@@ -14,6 +14,7 @@ export class UserProfilePageComponent implements OnInit {
   name: string = "";
 
   userData: User = {
+    _id: "",
     username: "",
     habits: [],
     email: "",
@@ -25,6 +26,11 @@ export class UserProfilePageComponent implements OnInit {
     }
   }
 
+  followDetails = {
+    followersCount: 0,
+    followingCount: 0
+  }
+
   constructor(public dialog: MatDialog, private upload: UploadService, private authService: AuthService) { }
 
   ngOnInit(): void {
@@ -32,6 +38,10 @@ export class UserProfilePageComponent implements OnInit {
       .subscribe((response) => {
         console.log(response)
         this.userData = response
+        this.followDetails = {
+          followersCount: response.followersCount,
+          followingCount: response.followingCount
+        }
         this.newDescription = this.userData.description
       },
         (error) => {

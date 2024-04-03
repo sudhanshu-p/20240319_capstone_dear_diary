@@ -22,8 +22,6 @@ router.put("/habit/:id", verifyToken, getUserMiddleware, userController.updateHa
 
 router.delete("/habit", verifyToken, getUserMiddleware, userController.deleteHabit)
 
-router.post("/save-pfp", verifyToken, userController.savePfp)
-
 router.get("/:username", ifAvailable, userController.getUserByUsername);
 
 // router.post('/setreminder', verifyToken, userController.scheduleReminder);

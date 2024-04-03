@@ -1,5 +1,5 @@
 // internal dependencies
-const User = require('../models/User')
+const {User} = require('../models/User')
 const Follow = require('../models/follwing')
 const admin = require("firebase-admin");
 
@@ -11,7 +11,7 @@ async function follow(req, res) {
         console.log(toFollowUserId);
         console.log(followerUserId);
         // Check if the user to be followed exists
-        const userToFollow = await User.findById(toFollowUserId);
+        const userToFollow = await User.findOne({ _id: toFollowUserId });
         if (!userToFollow) {
             return res.status(404).json({ message: 'User to follow not found.' });
         }

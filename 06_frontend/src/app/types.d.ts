@@ -20,6 +20,7 @@ interface comment {
 }
 
 interface User {
+    _id: string,
     username: string,
     habits: Array,
     email: string,
