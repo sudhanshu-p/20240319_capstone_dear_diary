@@ -45,15 +45,28 @@ export class DialogComponentComponent {
       time: this.selectedTime
     }
 
-    this.authService.makeRequest(`users/habit`, 'post', true, { body: dataToBeSent })
-      .subscribe(
-        (response) => {
-          console.log(response)
-        },
-        (error) => {
-          console.error(error)
-        }
-      )
+    if (!this.data) {
+      this.authService.makeRequest(`users/habit`, 'post', true, { body: dataToBeSent })
+        .subscribe(
+          (response) => {
+            console.log(response)
+          },
+          (error) => {
+            console.error(error)
+          }
+        )
+    }
+    else {
+      this.authService.makeRequest(`users/habit`, 'put', true, { body: dataToBeSent })
+        .subscribe(
+          (response) => {
+            console.log(response)
+          },
+          (error) => {
+            console.error(error)
+          }
+        )
+    }
   }
 
   isDisabled() {
