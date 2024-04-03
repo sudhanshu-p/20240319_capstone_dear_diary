@@ -92,7 +92,7 @@ async function createPage(req, res) {
       title: title,
       url: formatToUrl(author.username, title),
       content,
-      author_name: author.username,
+      author_name: author._id,
       published: true,
       publish_time: Date.now(),
       last_updated_time: Date.now(),

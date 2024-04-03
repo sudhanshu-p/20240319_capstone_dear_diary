@@ -18,3 +18,21 @@ interface comment {
     upvoted_by: Array<comment>,
     downvoted_by: Array<comment>,
 }
+
+interface User {
+    username: string,
+    habits: Array,
+    email: string,
+    description: string,
+    streak: {
+        current: number,
+        longest: number,
+        total_blogs: number
+    }
+}
+
+interface Hobby {
+    title: string,
+    frequency: Array<boolean>,
+    time: string
+}

@@ -1,10 +1,12 @@
 <div class="container">
     <div class="inner-container">
-        <h1 class="title">Create a New Hobby</h1>
+        <h1 class="title" *ngIf="data">Edit your Hobby</h1>
+        <h1 class="title" *ngIf="!data">Create a New Hobby</h1>
         <div class="dialog-content">
             <div class="hobby-title">
                 <h2>What is your hobby?</h2>
-                <input type="text" id="hobby-title" placeholder="Hobby Title" class="input-field" [(ngModel)]="hobbyTitle">
+                <input type="text" id="hobby-title" placeholder="Hobby Title" class="input-field"
+                    [(ngModel)]="hobbyTitle">
             </div>
             <div class="time-picker">
                 <h2>When do you do it?</h2>
@@ -23,7 +25,8 @@
         </div>
         <div class="form-actions">
             <mat-dialog-actions>
-                <button mat-dialog-close (click)="saveHabit()" class="my-button save-button" [disabled]="isDisabled()">Create Habit</button>
+                <button [mat-dialog-close]="{hobbyTitle, schedule, selectedTime}" (click)="saveHabit()"
+                    class="my-button save-button" [disabled]="isDisabled()">Create Habit</button>
             </mat-dialog-actions>
             <mat-dialog-actions>
                 <button mat-dialog-close class="my-button">Close</button>

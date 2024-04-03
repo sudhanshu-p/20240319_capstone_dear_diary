@@ -93,7 +93,7 @@ export class CreatePageComponent {
       "title": this.blogTitle,
       "content": this.blogContent,
       "visibility": isPrivate ? "private" : "public",
-      "posttype": ["Journal", "Collaberative", "Daily Journal", "Habit Tracker"],
+      "posttype": this.selectedTabLabel,
       "anonymous": this.getUsernameAnonymousValue() === "Anonymous"? true : false,
     }
     this.authService.makeRequest(`page`, 'post', true, { body: dataToBeSent })

@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-dialog-component',
@@ -19,6 +21,15 @@ export class DialogComponentComponent {
   selectedTime: string = '';
   schedule: boolean[] = Array.from({ length: 7 }, () => false);
 
+  constructor(@Inject(MAT_DIALOG_DATA) public data: Hobby | null, private authService: AuthService) {
+    if (data) {
+      console.log(data)
+      this.selectedTime = data.time
+      this.schedule = data.frequency
+      this.hobbyTitle = data.title
+    }
+  }
+
   isActivityScheduled(dayIndex: number): boolean {
     return this.schedule[dayIndex];
   }
@@ -28,7 +39,21 @@ export class DialogComponentComponent {
   }
 
   saveHabit() {
-    console.log("Habit saved!")
+    const dataToBeSent: Hobby = {
+      title: this.hobbyTitle,
+      frequency: this.schedule,
+      time: this.selectedTime
+    }
+
+    this.authService.makeRequest(`users/habit`, 'post', true, { body: dataToBeSent })
+      .subscribe(
+        (response) => {
+          console.log(response)
+        },
+        (error) => {
+          console.error(error)
+        }
+      )
   }
 
   isDisabled() {

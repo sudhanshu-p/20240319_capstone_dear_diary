@@ -1,44 +1,84 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DialogComponentComponent } from '../dialog-component/dialog-component.component';
+import { UploadService } from '../services/uploadimg.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-user-profile-page',
   templateUrl: './user-profile-page.component.html',
   styleUrl: './user-profile-page.component.css'
 })
-export class UserProfilePageComponent {
+export class UserProfilePageComponent implements OnInit {
   animal: string = "";
   name: string = "";
 
-  constructor(public dialog: MatDialog) { }
+  userData: User = {
+    username: "",
+    habits: [],
+    email: "",
+    description: "",
+    streak: {
+      current: 0,
+      longest: 0,
+      total_blogs: 0
+    }
+  }
 
-  openDialog(): void {
+  constructor(public dialog: MatDialog, private upload: UploadService, private authService: AuthService) { }
+
+  ngOnInit(): void {
+    this.authService.makeRequest("users", "get", true)
+      .subscribe((response) => {
+        console.log(response)
+        this.userData = response
+        this.newDescription = this.userData.description
+      },
+        (error) => {
+          console.error(error)
+        }
+      )
+  }
+
+  openDialog(data: Hobby | null): void {
     const dialogRef = this.dialog.open(DialogComponentComponent, {
-      data: { name: this.name, animal: this.animal },
+      data: data,
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      this.animal = result;
+      if (result) {
+        this.userData.habits.push({
+          title: result.hobbyTitle,
+          frequency: result.schedule,
+          time: result.selectedTime
+        })
+      }
     });
   }
-
-  userData = {
-    username: 'Sudhanshu12',
-    email: 'abcd@gmail.com',
-    description: 'Sample Description of the user'
-  };
 
   // Why? - To check for if there are changes and then activate the buttons.
   newDescription = this.userData.description
 
   saveChanges() {
     this.userData.description = this.newDescription
-    console.log('Changes saved:', this.userData);
+    this.authService.makeRequest("users", "put", true, { body: this.userData })
+      .subscribe((response) => {
+        console.log(response)
+      },
+        (error) => {
+          console.error(error)
+        }
+      )
   }
 
   resetChanges() {
     this.newDescription = this.userData.description
+  }
+
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0];
+    if (file) {
+      this.upload.uploadFile(file);
+    }
   }
 }

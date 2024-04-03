@@ -1,39 +1,27 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 
 const userSchema = new mongoose.Schema({
-    // Username of the user, must be provided and of type string
     username: { type: String, required: true },
-
-    // Description of the user, optional and of type string
     description: { type: String },
-
-    // Email of the user, must be provided and of type string
     email: { type: String, required: true },
-
-    // Password of the user, must be provided and of type string
     password: { type: String, required: true },
-    reminderSettings: { type: Schema.Types.ObjectId, ref: 'Reminder' }
-    userImage:{type:String,required:false},
-    fmcToken:{type:String,required:false},
+    reminderSettings: { type: mongoose.Schema.Types.ObjectId, ref: 'Reminder' },
+    userImage: { type: String, required: false },
+    fmcToken: { type: String, required: false },
+    // Array of habits to be tracked
+    habits: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Habit' }],
 });
 
-// Defining the schema for the Habit collection
-const HabitSchema = new mongoose.Schema({
-    // Title of the habit, must be provided and of type string
+// Schema for the habit object
+const habitSchema = new mongoose.Schema({
     title: { type: String, required: true },
-
-    // Frequency of the habit, an array of objects with fields for day and time
-    frequency: [{
-        // Day of the week when the habit is performed
-        day: { type: String, enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] },
-
-        // Time of the day when the habit is performed
-        time: { type: String }
-    }]
+    // Array of booleans to represent the days of the week
+    frequency: { type: [Boolean] },
+    // Time of day to be reminded
+    time: { type: String },
 });
- 
+
 // Creating the model using the defined schema
-const User = mongoose.model('User',userSchema);
-const Habit=mongoose.model('habit',HabitSchema)
-module.exports = User,Habit ;
+const User = mongoose.model('User', userSchema);
+const Habit = mongoose.model('Habit', habitSchema);
+module.exports = { User, Habit };
