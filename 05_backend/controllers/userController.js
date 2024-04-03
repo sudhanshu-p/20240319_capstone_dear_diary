@@ -1,5 +1,6 @@
 // External dependencies
 require("dotenv").config();
+const nodemailer = require("nodemailer");
 const cron = require('node-cron');
 // Models
 const User = require("../models/User");
@@ -8,6 +9,8 @@ const Reminder = require("../models/Reminder")
 
 // Validators
 const userValidator = require("../validators/User");
+
+
 
 /** Get user details
  * @async
@@ -94,6 +97,84 @@ async function getUserByUsername(req, res) {
 	}
 }
 
+// // Function to send a reminder
+// async function sendReminder(userId, schedule) {
+//     try{
+//         // Create a Nodemailer transporter
+//         const transporter = nodemailer.createTransport({
+//             // Provide your SMTP server configuration here
+//             // Example for Gmail:
+//             service: 'Gmail',
+//             host: "smtp.gmail.com",
+//             post: 587,
+//             secure: false,
+//             auth: {
+//                 user: "wadetiwarsd@rknec.edu",
+//                 pass: "duju bjcy tcfd igha",
+//             },
+//         });
+
+//         // Setup email data
+//         const mailOptions = {
+//             from: 'wadetiwarsd@rknec.edu',
+//             to: 'siddhiwadetiwar@gmail.com',
+//             subject: 'Reminder',
+//             text: `This is a reminder for user ${userId} scheduled at ${schedule}`,
+//         };
+
+//         // Send email
+//         const info = await transporter.sendMail(mailOptions);
+//         console.log('Email sent:', info.response);
+//     }catch (error) {
+//         console.error('Error sending email:', error.message);
+//     }
+//     // Implement your logic to send reminders here
+//     // This could be sending an email, notification, etc.
+// }
+
+// Function to send a reminder email to the specified recipient.
+async function sendReminder(userId, schedule) {
+    try {
+        // Fetch the user's email address from the database based on userId
+        const user = await User.findById(userId);
+
+        if (!user) {
+            console.error('User not found');
+            return; // Exit if user not found
+        }
+
+        const recipientEmail = user.email; // Extract user's email address
+
+        // Create a Nodemailer transporter
+        const transporter = nodemailer.createTransport({
+            // SMTP server configuration
+            // Example for Gmail:
+            service: 'Gmail',
+            host: "smtp.gmail.com",
+            port: 587,
+            secure: false,
+            auth: {
+                user: "wadetiwarsd@rknec.edu", // Your email address
+                pass: "duju bjcy tcfd igha", // Your email password or app-specific password
+            },
+        });
+
+        // Setup email data
+        const mailOptions = {
+            from:  "wadetiwarsd@rknec.edu", // Sender email address
+            to: recipientEmail, // Recipient email address fetched from the database
+            subject: 'Reminder',
+            text: `This is a reminder for user ${userId} scheduled at ${schedule}`,
+        };
+
+        // Send email
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Email sent:', info.response);
+    } catch (error) {
+        console.error('Error sending email:', error.message);
+    }
+}
+
 // Function to convert user-friendly schedule format to cron format
 function convertScheduleToCron(schedule) {
     // Ensure schedule is a non-null string
@@ -140,11 +221,11 @@ function convertScheduleToCron(schedule) {
 }
 
 
-
+// Schedule reminders based on the provided data
 async function scheduleReminder(req, res) {
     try {
         // Extract data from the request body
-        const remindersData = req.body.reminders;
+        const remindersData = req.body && req.body.reminders; // Check if req.body is defined
 
         // Validate input data
         if (!remindersData || !Array.isArray(remindersData)) {
@@ -171,7 +252,13 @@ async function scheduleReminder(req, res) {
                 continue; // Skip this reminder and proceed to the next one
             }
 
-            // Create a new reminder object
+            // Schedule the reminder using cron
+            cron.schedule(cronSchedule, async () => {
+                // Call the function to send the reminder
+                await sendReminder(userId, schedule);
+            });
+
+            // Create a new reminder object (optional, depending on your application logic)
             const reminder = new Reminder({
                 userId: userId,
                 schedule: schedule
@@ -191,11 +278,9 @@ async function scheduleReminder(req, res) {
         res.status(200).send({ createdReminders });
     } catch (error) {
         console.error('Error scheduling reminders:', error.message);
-        res.status(400).send('Error scheduling reminders');
+        //res.status(400).send('Error scheduling reminders');
     }
 }
-
-
 
 
 

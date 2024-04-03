@@ -8,7 +8,7 @@ const router = express.Router();
 
 // Importing the controller
 const userController = require("../controllers/userController");
-const { verifyToken } = require("../helpers/helperFunctions");
+const { verifyToken, getUserMiddleware } = require("../helpers/helperFunctions");
 
 // Routes
 router.put("/", verifyToken, userController.updateUser);
