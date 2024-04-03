@@ -12,7 +12,7 @@
                 <input type="file" id="avatar-input" class="avatar-input" accept="image/*"
                     (change)="onFileSelected($event)">
             </div>
-            <button class="my-button follow-btn">Follow</button>
+            <!-- <button class="my-button follow-btn">Follow</button> -->
             <div class="follow-info">
                 <span class="followers">
                     <strong>120</strong> Followers
@@ -88,7 +88,7 @@
                             <span class="day" [class.selected]="habit.frequency[6]">S</span>
                         </div>
                         <div class="hobby-time">
-                            <span class="time">{{habit.time}}</span>
+                            <span class="time">{{habit.time || "--:--"}}</span>
                         </div>
                     </div>
                     <button class="edit-button" (click)="openDialog(habit)">

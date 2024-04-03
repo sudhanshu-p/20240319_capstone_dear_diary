@@ -46,12 +46,22 @@ export class UserProfilePageComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // If result is found -> Save habit or Delete habit
       if (result) {
-        this.userData.habits.push({
-          title: result.hobbyTitle,
-          frequency: result.schedule,
-          time: result.selectedTime
-        })
+        // Case of Save habit
+        if (result.hobbyTitle) {
+          this.userData.habits.push({
+            _id: result._id,
+            title: result.hobbyTitle,
+            frequency: result.schedule,
+            time: result.selectedTime
+          })
+        }
+        else if (result._id) {
+          console.log(this.userData)
+          this.userData.habits = this.userData.habits.filter((habit: Hobby) => habit._id.toString() !== result._id);
+          console.log(this.userData)
+        }
       }
     });
   }

@@ -14,8 +14,6 @@ router.get("/", verifyToken, getUserMiddleware, userController.getUser);
 
 router.put("/", verifyToken, userController.updateUser);
 
-router.get("/:username", ifAvailable, userController.getUserByUsername);
-
 router.post("/habit", verifyToken, getUserMiddleware, userController.createHabit)
 
 // router.get("/habits", verifyToken, userController.getHabitsofUser)
@@ -23,6 +21,10 @@ router.post("/habit", verifyToken, getUserMiddleware, userController.createHabit
 router.put("/habit/:id", verifyToken, getUserMiddleware, userController.updateHabit)
 
 router.delete("/habit", verifyToken, getUserMiddleware, userController.deleteHabit)
+
+router.post("/save-pfp", verifyToken, userController.savePfp)
+
+router.get("/:username", ifAvailable, userController.getUserByUsername);
 
 // router.post('/setreminder', verifyToken, userController.scheduleReminder);
 // Exporting the router

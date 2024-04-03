@@ -34,5 +34,6 @@ interface User {
 interface Hobby {
     title: string,
     frequency: Array<boolean>,
-    time: string
+    time: string,
+    _id: string,
 }
