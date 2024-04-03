@@ -1,6 +1,6 @@
 // External dependencies
 require("dotenv").config();
-
+const mongoose = require('mongoose');
 // Models
 const User = require("../models/User");
 const Page = require("../models/Page");
@@ -79,8 +79,8 @@ async function getUserByUsername(req, res) {
 	const { username } = req.params;
 	console.log(username);
 	const { user } = req
-	console.log(user);
-	// console.log(user.id);
+	const userId = user.id
+	console.log(userId);
 
 
 	try {
@@ -92,60 +92,45 @@ async function getUserByUsername(req, res) {
 
 		const profileData = await User.aggregate([
 			{
-				$match: {
-					username: user.username
+			  '$match': {
+				'username': username
+			  }
+			}, {
+			  '$lookup': {
+				'from': 'follows', 
+				'localField': '_id', 
+				'foreignField': 'following', 
+				'as': 'followerof'
+			  }
+			}, {
+			  '$lookup': {
+				'from': 'follows', 
+				'localField': '_id', 
+				'foreignField': 'follower', 
+				'as': 'followingto'
+			  }
+			}, {
+			  '$addFields': {
+				'followersCount': {
+				  '$size': '$followerof'
+				}, 
+				'followingCount': {
+				  '$size': '$followingto'
+				}, 
+				'isfollowing': {
+				  '$cond': {
+					'if': {
+					  '$in': [
+						new mongoose.Types.ObjectId(userId), '$followerof.follower'
+					  ]
+					}, 
+					'then': true, 
+					'else': false
+				  }
 				}
+			  }
 			},
-			{
-				$lookup: {
-					from: 'follows',
-					localField: '_id',
-					foreignField: 'following',
-					as: 'followerof'
-				}
-			},
-			{
-				$lookup: {
-					from: 'follows',
-					localField: '_id',
-					foreignField: 'follower',
-					as: 'followingto'
-				}
-			},
-			{
-				$addFields: {
-					followersCount: {
-						$size: "$followerof"
-					},
-					followingCount: {
-						$size: "$followingto"
-					},
-
-
-				}
-
-			},
-			{
-				$addFields: {
-					isFollowing: {
-						$cond: {
-							if: { $in: ['66037bbd1733e61d260cea5f', "$followerof.follower"] },
-							then: true,
-							else: false
-						}
-					}
-				}
-			},
-			// {
-			// 	$project: {
-			// 		followersCount: 1,
-			// 		followingCount: 1,
-			// 		isFollowing:1,
-
-
-			// 	}
-			// }
-		])
+		  ])
 		console.log(profileData);
 		// Get the user's pages
 		const pages = await Page.find({ author: user._id });
