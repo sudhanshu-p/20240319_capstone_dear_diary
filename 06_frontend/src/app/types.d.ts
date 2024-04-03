@@ -21,6 +21,7 @@ interface comment {
 
 interface User {
     username: string,
+    userImage:string,
     habits: Array,
     email: string,
     description: string,
