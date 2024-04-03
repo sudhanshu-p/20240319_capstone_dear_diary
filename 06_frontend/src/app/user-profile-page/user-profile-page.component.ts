@@ -3,6 +3,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 import { DialogComponentComponent } from '../dialog-component/dialog-component.component';
 import { UploadService } from '../services/uploadimg.service';
 import { AuthService } from '../services/auth.service';
+import { UpdateUserService } from '../services/update-user.service';
 
 @Component({
   selector: 'app-user-profile-page',
@@ -12,10 +13,13 @@ import { AuthService } from '../services/auth.service';
 export class UserProfilePageComponent implements OnInit {
   animal: string = "";
   name: string = "";
+  fileSelected: boolean = false;
+  file:any;
 
   userData: User = {
     _id: "",
     username: "",
+    userImage:'',
     habits: [],
     email: "",
     description: "",
@@ -31,7 +35,7 @@ export class UserProfilePageComponent implements OnInit {
     followingCount: 0
   }
 
-  constructor(public dialog: MatDialog, private upload: UploadService, private authService: AuthService) { }
+  constructor(public dialog: MatDialog, private upload: UploadService, private authService: AuthService,private updateuser:UpdateUserService) { }
 
   ngOnInit(): void {
     this.authService.makeRequest("users", "get", true)
@@ -98,7 +102,45 @@ export class UserProfilePageComponent implements OnInit {
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
     if (file) {
-      this.upload.uploadFile(file);
+      this.fileSelected = true;
+      this.file = file
+      const reader = new FileReader();
+
+      reader.onload = (e: any) => {
+        this.userData.userImage = e.target.result;
+      };
+
+      reader.readAsDataURL(file);
+      
     }
+  }
+  updateImage(image:string){
+    const userData = {
+      userImage:image
+    }
+    this.updateuser.update(userData).subscribe({
+      next:(response)=>{
+        console.log("done");
+        
+      },
+      error:(err)=>{
+        console.log(err);
+        
+      }
+    })
+  }
+
+  confirmImage(): void {
+    this.fileSelected = false; // Reset to false after confirmation
+    this.upload.uploadFile(this.file).subscribe({
+      next: (downloadURL) => {
+        console.log('Download URL:', downloadURL);
+        this.updateImage(downloadURL)
+        
+      },
+      error: (error) => {
+        console.error('Upload error:', error);
+      }
+    });
   }
 }

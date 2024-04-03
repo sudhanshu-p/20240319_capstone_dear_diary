@@ -12,7 +12,16 @@ export class UploadImgComponent {
   onFileSelected(event:any) {
     const file: File = event.target.files[0];
     if (file) {
-      this.upload.uploadFile(file);
+      
+    this.upload.uploadFile(file).subscribe({
+      next: (downloadURL) => {
+        console.log('Download URL:', downloadURL);
+        
+      },
+      error: (error) => {
+        console.error('Upload error:', error);
+      }
+    });
     }
   }
 }

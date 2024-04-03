@@ -2,7 +2,7 @@
     <div class="hero-section">
         <div class="profile-photo">
             <div class="avatar-container">
-                <img src="https://avatars.githubusercontent.com/u/84870015?v=4" alt="Avatar" class="avatar">
+                <img [src]="userData.userImage" alt="Avatar" class="avatar">
                 <label for="avatar-input" class="edit-avatar-label">
                     <svg class="edit-icon" viewBox="0 0 24 24">
                         <path
@@ -11,8 +11,14 @@
                 </label>
                 <input type="file" id="avatar-input" class="avatar-input" accept="image/*"
                     (change)="onFileSelected($event)">
+
             </div>
+<<<<<<< HEAD
             <!-- <button class="my-button follow-btn">Follow</button> -->
+=======
+            <button class="my-button" *ngIf="fileSelected" (click)="confirmImage()">Confirm Image</button>
+            <button class="my-button follow-btn">Follow</button>
+>>>>>>> d1286b87d5efd562c15dff8c6870b8c5eecbdc85
             <div class="follow-info">
                 <span class="followers">
                     <strong>{{followDetails.followersCount}}</strong> Followers

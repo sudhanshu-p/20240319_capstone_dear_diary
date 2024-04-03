@@ -24,7 +24,8 @@ export class UserDisplayPageComponent {
       current: 0,
       longest: 0,
       total_blogs: 0
-    }
+    },
+    userImage: ''
   }
 
   followDetails = {
