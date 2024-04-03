@@ -6,6 +6,7 @@ const User = require("../models/User");
 const Page = require("../models/Page");
 const Reminder = require("../models/Reminder")
 
+
 // Validators
 const userValidator = require("../validators/User");
 
@@ -160,6 +161,136 @@ async function getUserByUsername(req, res) {
 	}
 }
 
+// Define an asynchronous function to handle creating a new habit
+async function postHabits(req, res) {
+    try {
+        // Retrieve user details from the database based on the user ID extracted from the token
+        const user = await User.findOne({ _id: req.user.id });
+
+        // If user does not exist, respond with status code 404 and a message indicating the account does not exist
+        if (!user) {
+            return res.status(404).send("Account does not exist");
+        }
+
+        // Extract data (title, frequency, time) from request body
+        const { title, frequency, time } = req.body;
+
+        // Create a new habit using the Habit model and provided data
+        const habit = await Habit.create({ title, frequency, time, userId: req.user.id });
+
+        // Respond with status code 201 (created) and JSON object containing the created habit
+        return res.status(201).json({ habit });
+    } catch (error) {
+        // If an error occurs during the process, respond with status code 500 (internal server error)
+        // and send a JSON object containing the error message
+        return res.status(500).json({ error: error.message });
+    }
+}
+
+
+async function getHabitsofUser(req, res) {
+	try {
+        // Extract habit ID from the request parameters
+        const { id } = req.params;
+        
+        // Assuming you have middleware to extract user ID from token
+        const userId = req.user.id; // Extract the user ID from the token
+
+        // Find the habit with the provided ID that belongs to the current user
+        const habit = await Habit.findOne({ _id: id, userId });
+
+        // If habit is not found, respond with status code 404 and a message indicating habit not found
+        if (!habit) {
+            return res.status(404).json({ message: 'Habit not found' });
+        }
+
+        // Respond with status code 200 (OK) and JSON object containing the habit
+        return res.json({ habit });
+    } catch (error) {
+        // If an error occurs during the process, respond with status code 500 (internal server error)
+        // and send a JSON object containing the error message
+        return res.status(500).json({ error: error.message });
+    }
+
+}
+async function updateHabitsofUser(req, res){
+	try {
+        // Extract habit ID from the request parameters
+        const { id } = req.params;
+        
+        // Extract data (title, frequency, time) from request body
+        const { title, frequency, time } = req.body;
+        
+        // Assuming you have middleware to extract user ID from token
+        const userId = req.user.id; // Extract the user ID from the token
+
+        // Find and update the habit with the provided ID that belongs to the current user
+        const habit = await Habit.findOneAndUpdate({ _id: id, userId }, { title, frequency, time }, { new: true });
+
+        // If habit is not found, respond with status code 404 and a message indicating habit not found
+        if (!habit) {
+            return res.status(404).json({ message: 'Habit not found' });
+        }
+
+        // Respond with status code 200 (OK) and JSON object containing the updated habit
+        return res.json({ habit });
+    } catch (error) {
+        // If an error occurs during the process, respond with status code 500 (internal server error)
+        // and send a JSON object containing the error message
+        return res.status(500).json({ error: error.message });
+    }
+}
+async function updateHabitsofUser(req, res){
+	try {
+        // Extract habit ID from the request parameters
+        const { id } = req.params;
+        
+        // Assuming you have middleware to extract user ID from token
+        const userId = req.user.id; // Extract the user ID from the token
+
+        // Find and delete the habit with the provided ID that belongs to the current user
+        const habit = await Habit.findOneAndDelete({ _id: id, userId });
+
+        // If habit is not found, respond with status code 404 and a message indicating habit not found
+        if (!habit) {
+            return res.status(404).json({ message: 'Habit not found' });
+        }
+
+        // Respond with status code 200 (OK) and JSON object containing a success message
+        return res.json({ message: 'Habit deleted successfully' });
+    } catch (error) {
+        // If an error occurs during the process, respond with status code 500 (internal server error)
+        // and send a JSON object containing the error message
+        return res.status(500).json({ error: error.message });
+    }
+
+}
+
+async function deleteHabitsofUser(req, res){try {
+	// Extract habit ID from the request parameters
+	const { id } = req.params;
+	
+	// Assuming you have middleware to extract user ID from token
+	const userId = req.user.id; // Extract the user ID from the token
+
+	// Find and delete the habit with the provided ID that belongs to the current user
+	const habit = await Habit.findOneAndDelete({ _id: id, userId });
+
+	// If habit is not found, respond with status code 404 and a message indicating habit not found
+	if (!habit) {
+		return res.status(404).json({ message: 'Habit not found' });
+	}
+
+	// Respond with status code 200 (OK) and JSON object containing a success message
+	return res.json({ message: 'Habit deleted successfully' });
+} catch (error) {
+	// If an error occurs during the process, respond with status code 500 (internal server error)
+	// and send a JSON object containing the error message
+	return res.status(500).json({ error: error.message });
+}
+
+
+}
 // Function to convert user-friendly schedule format to cron format
 function convertScheduleToCron(schedule) {
     // Ensure schedule is a non-null string
@@ -260,16 +391,14 @@ async function scheduleReminder(req, res) {
         res.status(400).send('Error scheduling reminders');
     }
 }
-
-
-
-
-
-
 // Exporting the functions
 module.exports = {
 	getUser,
 	updateUser,
 	getUserByUsername,
+	postHabits,
+	getHabitsofUser,
+	updateHabitsofUser,
+	deleteHabitsofUser,
 	scheduleReminder,
 };
