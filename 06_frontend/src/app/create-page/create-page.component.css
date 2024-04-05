@@ -3,7 +3,6 @@
     flex-wrap: wrap;
     justify-content: space-between;
     width: 90vw;
-    padding: 20px;
     gap: 2rem;
 }
 
@@ -13,7 +12,8 @@
     padding: 20px;
 }
 
-.left-section, .right-section {
+.left-section,
+.right-section {
     display: flex;
     flex-direction: column;
     gap: 2rem;
@@ -34,6 +34,35 @@ label {
     height: 1px;
     background-color: #ff6347;
 }
+
+/* Code for the tabs */
+
+.tab-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    border-radius: 4px;
+}
+
+.tab-header {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.tab-item {
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+.tab-item.active {
+    color: var(--special-color);
+    border-bottom: 2px solid var(--special-color);
+}
+
+/* End code for the tabs */
 
 input[type="text"],
 textarea {
@@ -141,6 +170,22 @@ input:checked+.slider:before {
     width: 100%;
 }
 
+/* Habits CSS */
+
+.habit-input {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 0;
+    gap: 2rem;
+}
+
+.habit-display {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* End Habits CSS */
+
 @media (max-width: 768px) {
     .container {
         flex-direction: column;
@@ -148,7 +193,10 @@ input:checked+.slider:before {
 
     .left-section,
     .right-section {
+        padding: 0;
+        margin: 0;
         flex-basis: 100%;
+        max-width: 100%;
         margin-bottom: 20px;
     }
 }

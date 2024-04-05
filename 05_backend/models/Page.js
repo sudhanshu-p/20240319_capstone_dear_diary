@@ -13,7 +13,7 @@ const pageSchema = new Schema({
     downvoted_by: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
     visibility: { type: String, enum: ['private', 'public'], default: 'private' },
-    posttype: { type: String, enum: ["Journal", "Collaberative", "Daily Journal", "Habit Tracker"] },
+    posttype: { type: String, enum: ["Blog", "Journal", "Collaberative"] },
     anonymous: { type: Boolean, default: false}
 });
 

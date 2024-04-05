@@ -22,7 +22,7 @@ interface comment {
 interface User {
     _id: string,
     username: string,
-    userImage:string,
+    userImage: string,
     habits: Array,
     email: string,
     description: string,
@@ -38,4 +38,14 @@ interface Hobby {
     frequency: Array<boolean>,
     time: string,
     _id: string,
+}
+
+interface Tab {
+    title: string;
+}
+
+interface HabitInput {
+    title: string,
+    done: boolean,
+    written_content: string
 }

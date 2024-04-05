@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MarkdownService } from 'ngx-markdown';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
@@ -9,30 +9,70 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
   templateUrl: './create-page.component.html',
   styleUrl: './create-page.component.css'
 })
-export class CreatePageComponent {
+export class CreatePageComponent implements OnInit {
   @ViewChild('toggleCheckbox') toggleCheckbox: ElementRef | undefined;
   @ViewChild('usernameCheckbox') usernameCheckbox: ElementRef<HTMLInputElement> | undefined;
 
-  getUsernameAnonymousValue(): string {
+  getUsernameAnonymousValue(): boolean {
     if (this.usernameCheckbox && this.usernameCheckbox.nativeElement.checked) {
-      return 'Username';
+      return false;
     } else {
-      return 'Anonymous';
+      return true;
     }
   }
+
   selectedTabLabel = 'Journal'; // Initial selected tab (optional)
   showPrivacyToggles = true; // Initial visibility state
   isPublic = true; // Initial state: Public selected
+  habitsShowing = false
 
-  currentTabIndex = 0;
-  onTabChange(event: MatTabChangeEvent) {
-    this.selectedTabLabel = event.index === 0 ? 'Journal' : event.tab.textLabel;
-    this.showPrivacyToggles = this.selectedTabLabel === 'Journal';
-    this.currentTabIndex = event.index;
+  userHabits: Array<HabitInput> = [
+    {
+      title: 'Swimming',
+      done: false,
+      written_content: ''
+    },
+    {
+      title: 'Running',
+      done: false,
+      written_content: ''
+    }
+  ]
+
+  tabs: Tab[] = [
+    {
+      title: 'Blog',
+    },
+    {
+      title: 'Journal',
+    },
+    {
+      title: 'Collaborative',
+    }
+  ];
+
+  activeTabIndex: number = 1;
+
+  selectTab(index: number) {
+    this.activeTabIndex = index;
+    if (index === 0) {
+      this.showPrivacyToggles = true
+    }
+    else {
+      this.showPrivacyToggles = false
+    }
   }
 
   onPrivacyChange(isPublic: boolean) {
     this.isPublic = isPublic;
+  }
+
+  showHabits() {
+    this.habitsShowing = !this.habitsShowing
+  }
+
+  habitDoneChanged(habit: HabitInput) {
+    habit.done = !habit.done
   }
 
   blogTitle: string = ''
@@ -46,6 +86,14 @@ export class CreatePageComponent {
     private authService: AuthService,
     private router: Router
   ) { }
+
+  ngOnInit(): void {
+    // Fetch the user habits
+    this.authService.makeRequest("users/habits", "get", true)
+      .subscribe((response) => {
+        console.log(response)
+      })
+  }
 
   insertMarkdown(prefix: string, helperText: string, suffix: string) {
     const textareaEl = document.querySelector('textarea');
@@ -83,18 +131,37 @@ export class CreatePageComponent {
     }
   }
 
+  updatePostContentWithHabits(): string {
+    let updatedPage = this.blogContent
+
+    updatedPage += `\n\n ## Habits`
+
+    for (let index = 0; index < this.userHabits.length; index++) {
+      updatedPage += `\n\n ### - ${this.userHabits[index].title} - ${this.userHabits[index].done ? '✅' : '❌'} \n ${this.userHabits[index].written_content}`
+    }
+
+    return updatedPage
+  }
+
   savePost() {
     // Calling the POST API
     if (!this.toggleCheckbox) {
       return
     }
     const isPrivate = this.toggleCheckbox.nativeElement.checked;
+
+    let postContent = this.blogContent
+
+    if (this.tabs[this.activeTabIndex].title === "Journal") {
+      postContent = this.updatePostContentWithHabits()
+    }
+
     const dataToBeSent = {
       "title": this.blogTitle,
-      "content": this.blogContent,
+      "content": postContent,
       "visibility": isPrivate ? "private" : "public",
-      "posttype": this.selectedTabLabel,
-      "anonymous": this.getUsernameAnonymousValue() === "Anonymous"? true : false,
+      "posttype": this.tabs[this.activeTabIndex].title,
+      "anonymous": this.getUsernameAnonymousValue(),
     }
     this.authService.makeRequest(`page`, 'post', true, { body: dataToBeSent })
       .subscribe(

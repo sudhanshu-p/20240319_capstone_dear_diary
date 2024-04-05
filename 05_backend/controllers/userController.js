@@ -37,6 +37,7 @@ async function getUser(req, res) {
             {
                 $match: { _id: user._id }
             },
+            // Lookup for user habits
             {
                 $lookup: {
                     from: 'habits',
@@ -45,6 +46,7 @@ async function getUser(req, res) {
                     as: 'habits'
                 }
             },
+            // Lookup for user followers
             {
                 '$lookup': {
                     'from': 'follows',
@@ -229,6 +231,32 @@ async function createHabit(req, res) {
     }
 }
 
+// Get the habits of a user
+async function getHabits(req, res) {
+    try {
+        // Find the user by ID and populate the habits
+        const user = await User.aggregate([
+            {
+                $match: { _id: user.id }
+            },
+            // Lookup for user habits
+            {
+                $lookup: {
+                    from: 'habits',
+                    localField: 'habits',
+                    foreignField: '_id',
+                    as: 'habits'
+                }
+            }
+        ])
+
+        return res.status(200).json({ habits: user[0].habits });
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({ error: error.message });
+    }
+}
+
 async function updateHabit(req, res) {
     const user = req.user;
     const { id } = req.params;
@@ -397,6 +425,7 @@ module.exports = {
     updateUser,
     getUserByUsername,
     createHabit,
+    getHabits,
     updateHabit,
     deleteHabit,
     // scheduleReminder,

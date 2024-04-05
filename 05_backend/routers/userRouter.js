@@ -16,7 +16,7 @@ router.put("/", verifyToken, userController.updateUser);
 
 router.post("/habit", verifyToken, getUserMiddleware, userController.createHabit)
 
-// router.get("/habits", verifyToken, userController.getHabitsofUser)
+router.get("/habits", verifyToken, userController.getHabits)
 
 router.put("/habit/:id", verifyToken, getUserMiddleware, userController.updateHabit)
 
