@@ -70,6 +70,8 @@ async function getPageByUrl(req, res) {
 async function createPage(req, res) {
   const { title, content, visibility, posttype, anonymous } = req.body;
 
+  console.log(req.body)
+
   // Validate the user input
   if (!pageValidator.validateTitle(title)) {
     return res.status(417).send("Invalid title");
@@ -266,11 +268,12 @@ async function updatePage(req, res) {
             { content: { $regex: search_query, $options: "i" } },
           ],
           visibility: "public",
+          posttype: "Blog"
         });
       }
       else if (recent) {
         // Get the most recent pages
-        pages = await Page.find({ visibility: "public" })
+        pages = await Page.find({ visibility: "public", posttype: "Blog" })
           .sort({ publish_time: -1 })
           .limit(10); // Since for our specific use case, we only need max 10 pages
       }

@@ -119,4 +119,24 @@ async function login(req, res) {
   }
 }
 
-module.exports = { register, login };
+async function checkJwt(req, res) {
+  let token
+  try {
+    token = req.headers.authorization.split(" ")[1];
+  }
+  catch (error) {
+    res.status(403).send("No token found")
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (decoded) {
+      res.status(200)
+    }
+  }
+  catch (error) {
+    res.status(401).send("Token expired.")
+  }
+}
+
+module.exports = { register, login, checkJwt };
